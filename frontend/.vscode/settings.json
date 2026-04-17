@@ -1,0 +1,7 @@
+{
+  "css.customData": [".vscode/tailwind_directives.json"],
+  "scss.customData": [".vscode/tailwind_directives.json"],
+  "editor.quickSuggestions": {
+    "strings": true
+  }
+}

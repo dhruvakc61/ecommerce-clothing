@@ -1,0 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --font-body: "DM Sans", "Segoe UI", sans-serif;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --theme-bg: #f6f1ea;
+  --theme-surface: #fffdf9;
+  --theme-surface-soft: #f2e9de;
+  --theme-panel: #ebe1d4;
+  --theme-ink: #241c17;
+  --theme-text: #5f544a;
+  --theme-muted: #8d7f72;
+  --theme-accent: #b07a4f;
+  --theme-accent-strong: #8d5e3e;
+  --theme-accent-soft: #d8b18a;
+  --theme-border: #e4d7c8;
+  --theme-dark: #1f1814;
+  --theme-dark-soft: #312720;
+}
+
+html {
+  background: var(--theme-bg);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin-top: 80px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  font-family: var(--font-body);
+  background:
+    radial-gradient(circle at top, rgba(216, 177, 138, 0.18), transparent 30%),
+    var(--theme-bg);
+  color: var(--theme-text);
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+a,
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: rgba(176, 122, 79, 0.18);
+  color: var(--theme-ink);
+}
+
+.container {
+  @apply max-w-6xl mx-auto;
+}

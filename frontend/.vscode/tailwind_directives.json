@@ -1,0 +1,29 @@
+{
+  "version": 1.0,
+  "atDirectives": [
+    {
+      "name": "@import",
+      "description": "Import Tailwind v4 layers"
+    },
+    {
+      "name": "@apply",
+      "description": "TailwindCSS utility application"
+    },
+    {
+      "name": "@theme",
+      "description": "TailwindCSS theme variables"
+    },
+    {
+      "name": "@source",
+      "description": "TailwindCSS source directive"
+    },
+    {
+      "name": "@layer",
+      "description": "TailwindCSS layers"
+    },
+    {
+      "name": "@config",
+      "description": "TailwindCSS config directive"
+    }
+  ]
+}
