@@ -31,6 +31,16 @@ const slides = [
   },
 ];
 
+const mockProducts = [
+  { _id: "1", name: "Child Special T-Shirts", price: 199, oldPrice: 299, badge: "Sale", img: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500&q=80" },
+  { _id: "2", name: "Ladies Sandal Clean", price: 199, badge: null, img: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80" },
+  { _id: "3", name: "Leather Bag Inside", price: 199, oldPrice: 299, badge: "Sale", img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&q=80" },
+  { _id: "4", name: "Neck Scarf Full", price: 199, oldPrice: 299, badge: "Sale", img: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=500&q=80" },
+  { _id: "5", name: "Men Fashion Winter", price: 199, badge: null, img: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&q=80" },
+  { _id: "6", name: "White Graphic Tee", price: 199, oldPrice: 299, badge: "Sale", img: "https://images.unsplash.com/photo-1622445275576-721325763afe?w=500&q=80" },
+  { _id: "7", name: "Denim Shorts Jeans", price: 199, badge: null, img: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=500&q=80" },
+  { _id: "8", name: "Classic Hand Bag", price: 199, badge: null, img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&q=80" },
+];
 
 const blogPosts = [
   { id: 1, date: "10 January", title: "Top Winter Fashion Trends You Need to Know", excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec faucibus maximus vehicula tellus vel tristique.", img: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=80" },
