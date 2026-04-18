@@ -27,6 +27,8 @@ const SORT_OPTIONS = [
 ];
 
 const PER_PAGE = 9;
+const BODY_FONT = "var(--font-body)";
+const DISPLAY_FONT = "var(--font-display)";
 
 const MOCK_PRODUCTS = Array.from({ length: 9 }, (_, i) => ({
   id: i + 1,
@@ -80,7 +82,7 @@ function Badge({ text }) {
       background:bg, color:"#fff",
       fontSize:9, fontWeight:700, letterSpacing:1,
       padding:"3px 8px", textTransform:"uppercase",
-      fontFamily:"'Josefin Sans',sans-serif",
+      fontFamily:BODY_FONT,
       borderRadius: text === "HOT" ? 2 : 3,
     }}>{text}</span>
   );
@@ -120,10 +122,10 @@ function ProductCard({ product, viewMode }) {
         </Link>
         <div style={{ flex:1, padding:"18px 18px 18px 0", display:"flex", flexDirection:"column", justifyContent:"center", gap:8 }}>
           <Link to={`/products/${pid}`} style={{ textDecoration:"none" }}>
-            <p style={{ fontFamily:"'Josefin Sans',sans-serif", fontSize:15, fontWeight:600, color:"#1a1a1a", margin:0 }}>{product.name}</p>
+            <p style={{ fontFamily:DISPLAY_FONT, fontSize:24, fontWeight:600, color:"#1a1a1a", margin:0, lineHeight:1 }}>{product.name}</p>
           </Link>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            <span style={{ fontFamily:"'Josefin Sans',sans-serif", fontSize:15, fontWeight:700, color:"#e8b14f" }}>
+            <span style={{ fontFamily:DISPLAY_FONT, fontSize:24, fontWeight:600, color:"#e8b14f", lineHeight:1 }}>
               {formatCurrency(price)}
             </span>
             {isOnSale && <span style={{ fontSize:12, color:"#bbb", textDecoration:"line-through" }}>{formatCurrency(oldPrice)}</span>}
@@ -139,7 +141,7 @@ function ProductCard({ product, viewMode }) {
             marginTop:4, alignSelf:"flex-start",
             background:"#1a1a1a", color:"#fff", border:"none",
             padding:"9px 22px", fontSize:10,
-            fontFamily:"'Josefin Sans',sans-serif", fontWeight:700,
+            fontFamily:BODY_FONT, fontWeight:700,
             letterSpacing:1.5, textTransform:"uppercase", cursor:"pointer",
             borderRadius:999,
           }}>Add to Cart</button>
@@ -209,14 +211,14 @@ function ProductCard({ product, viewMode }) {
 
       <div style={{ padding:"14px 14px 16px" }}>
         <Link to={`/products/${pid}`} style={{ textDecoration:"none" }}>
-          <p style={{ fontFamily:"'Josefin Sans',sans-serif", fontSize:13, fontWeight:600,
+          <p style={{ fontFamily:DISPLAY_FONT, fontSize:22, fontWeight:600,
             color:"#1a1a1a", margin:"0 0 6px", letterSpacing:.3, lineHeight:1.3,
             whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
             {product.name}
           </p>
         </Link>
         <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-          <span style={{ fontFamily:"'Josefin Sans',sans-serif", fontSize:14, fontWeight:700, color:"#e8b14f" }}>
+          <span style={{ fontFamily:DISPLAY_FONT, fontSize:22, fontWeight:600, color:"#e8b14f", lineHeight:1 }}>
             {formatCurrency(price)}
           </span>
           {isOnSale && (
@@ -236,7 +238,7 @@ function ProductCard({ product, viewMode }) {
 function SideSection({ title, children }) {
   return (
     <div style={{ marginBottom:28 }}>
-      <h3 style={{ fontFamily:"'Josefin Sans',sans-serif", fontSize:14, fontWeight:700,
+      <h3 style={{ fontFamily:BODY_FONT, fontSize:14, fontWeight:700,
         color:"#1a1a1a", letterSpacing:.5, textTransform:"uppercase",
         marginBottom:14, paddingBottom:10,
         borderBottom:"2px solid #1a1a1a" }}>
@@ -377,9 +379,7 @@ export default function Products() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&family=Lato:wght@300;400;700&display=swap');
-
-        .ps-page { font-family:'Lato',sans-serif; background:#fff; color:#333; overflow-x:hidden;  }
+        .ps-page { font-family:var(--font-body); background:#fff; color:#333; overflow-x:hidden;  }
         .ps-layout { display:grid; grid-template-columns:240px 1fr; gap:36px; max-width:1260px; margin:0 auto; padding:36px 24px; width:100%; max-width:1260px; }
         .ps-sidebar { min-width:0; }
 
@@ -399,7 +399,7 @@ export default function Products() {
         .ps-color.active { border-color:#333; }
 
         /* Tag pills */
-        .ps-tag { padding:5px 12px; border:1px solid #e0e0e0; border-radius:999px; font-size:11px; color:#666; cursor:pointer; transition:all .2s; font-family:'Josefin Sans',sans-serif; font-weight:600; letter-spacing:.5px; background:#fff; }
+        .ps-tag { padding:5px 12px; border:1px solid #e0e0e0; border-radius:999px; font-size:11px; color:#666; cursor:pointer; transition:all .2s; font-family:var(--font-body); font-weight:600; letter-spacing:.12em; background:#fff; text-transform:uppercase; }
         .ps-tag:hover { border-color:#e8b14f; color:#e8b14f; }
         .ps-tag.active { background:#e8b14f; border-color:#e8b14f; color:#fff; }
 
@@ -407,14 +407,14 @@ export default function Products() {
         .ps-toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
         .ps-view-btn { width:34px; height:34px; border:1px solid #e0e0e0; border-radius:6px; background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; }
         .ps-view-btn.active { background:#1a1a1a; border-color:#1a1a1a; }
-        .ps-sort-select { padding:8px 32px 8px 12px; border:1px solid #e0e0e0; border-radius:6px; font-size:13px; font-family:'Lato',sans-serif; color:#555; background:#fff; cursor:pointer; outline:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; }
+        .ps-sort-select { padding:8px 32px 8px 12px; border:1px solid #e0e0e0; border-radius:6px; font-size:13px; font-family:var(--font-body); color:#555; background:#fff; cursor:pointer; outline:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; }
 
         /* Product grid */
         .ps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
         .ps-list { display:flex; flex-direction:column; gap:16px; }
 
         /* Pagination */
-        .ps-page-btn { width:36px; height:36px; border-radius:999px; border:1px solid #e0e0e0; background:#fff; cursor:pointer; font-size:13px; font-family:'Josefin Sans',sans-serif; font-weight:600; color:#555; transition:all .2s; display:flex; align-items:center; justify-content:center; }
+        .ps-page-btn { width:36px; height:36px; border-radius:999px; border:1px solid #e0e0e0; background:#fff; cursor:pointer; font-size:13px; font-family:var(--font-body); font-weight:600; color:#555; transition:all .2s; display:flex; align-items:center; justify-content:center; }
         .ps-page-btn:hover { border-color:#e8b14f; color:#e8b14f; }
         .ps-page-btn.active { background:#e8b14f; border-color:#e8b14f; color:#fff; }
         .ps-page-btn.next { padding:0 16px; width:auto; }
@@ -431,10 +431,12 @@ export default function Products() {
           .ps-layout { grid-template-columns:1fr; }
           .ps-sidebar { display:none; }
           .ps-grid { grid-template-columns:repeat(2,1fr); }
+          .ps-toolbar { align-items:flex-start; }
         }
         @media(max-width:500px){
           .ps-layout { padding:24px 16px; }
           .ps-grid { grid-template-columns:1fr; }
+          .ps-toolbar { flex-direction:column; }
         }
       `}</style>
 
@@ -456,7 +458,7 @@ export default function Products() {
                 </span>
                 <button onClick={applyPriceFilter} style={{
                   background:"#1a1a1a", color:"#fff", border:"none",
-                  padding:"6px 16px", fontSize:11, fontFamily:"'Josefin Sans',sans-serif",
+                  padding:"6px 16px", fontSize:11, fontFamily:BODY_FONT,
                   fontWeight:700, letterSpacing:1, textTransform:"uppercase",
                   cursor:"pointer", borderRadius:999,
                 }}>Filter</button>
@@ -491,14 +493,14 @@ export default function Products() {
                         }
                       </div>
                       <div style={{ minWidth:0 }}>
-                        <p style={{ fontSize:11, color:"#aaa", marginBottom:3, fontFamily:"'Josefin Sans',sans-serif" }}>
+                        <p style={{ fontSize:11, color:"#aaa", marginBottom:3, fontFamily:BODY_FONT }}>
                           {(p.tags || []).join(", ") || p.category || ""}
                         </p>
-                        <p style={{ fontSize:12, fontWeight:600, color:"#333", fontFamily:"'Josefin Sans',sans-serif", marginBottom:4, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
+                        <p style={{ fontSize:20, fontWeight:600, color:"#333", fontFamily:DISPLAY_FONT, marginBottom:4, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", lineHeight:1 }}>
                           {p.name}
                         </p>
                         <div style={{ display:"flex", gap:8 }}>
-                          <span style={{ fontSize:12, color:"#e8b14f", fontWeight:700, fontFamily:"'Josefin Sans',sans-serif" }}>
+                          <span style={{ fontSize:20, color:"#e8b14f", fontWeight:600, fontFamily:DISPLAY_FONT, lineHeight:1 }}>
                             {formatCurrency(p.price || p.sale_price || 0)}
                           </span>
                           {(p.oldPrice || p.original_price) && (
@@ -550,13 +552,13 @@ export default function Products() {
               </div>
 
               {/* Result count */}
-              <span style={{ fontSize:13, color:"#999", fontFamily:"'Josefin Sans',sans-serif" }}>
+              <span style={{ fontSize:13, color:"#999", fontFamily:BODY_FONT }}>
                 {loading ? "Loading…" : `Showing ${startItem}–${endItem} of ${total} results`}
               </span>
 
               {/* Sort */}
               <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <span style={{ fontSize:13, color:"#999", fontFamily:"'Josefin Sans',sans-serif" }}>Sort By:</span>
+                <span style={{ fontSize:13, color:"#999", fontFamily:BODY_FONT }}>Sort By:</span>
                 <select className="ps-sort-select" value={sortBy} onChange={e => handleSort(e.target.value)}>
                   {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
@@ -597,7 +599,7 @@ export default function Products() {
                   padding:"24px 20px",
                   textAlign:"center",
                   color:"#7a6d5d",
-                  fontFamily:"'Josefin Sans',sans-serif",
+                  fontFamily:BODY_FONT,
                 }}>
                   No products match your current filters.
                 </div>

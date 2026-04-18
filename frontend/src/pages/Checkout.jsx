@@ -5,7 +5,8 @@ import useAuth from "../hooks/useAuth";
 import api from "../api/axios";
 import formatCurrency from "../utils/formatCurrency";
 
-const J = "'Josefin Sans','Segoe UI',sans-serif";
+const J = "var(--font-body)";
+const D = "var(--font-display)";
 const FREE_SHIP_MIN = 100;
 
 const GoldBtn = ({ children, onClick, disabled = false, style = {}, type = "button" }) => {
@@ -59,7 +60,7 @@ function Hero() {
       <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", padding: "0 clamp(16px, 4vw, 60px)" }}>
         <h1
           style={{
-            fontFamily: J,
+            fontFamily: D,
             fontSize: "clamp(24px,4vw,40px)",
             fontWeight: 700,
             color: "#fff",
@@ -115,9 +116,9 @@ function EmptyCheckout() {
       </svg>
       <h2
         style={{
-          fontFamily: J,
-          fontSize: 20,
-          fontWeight: 700,
+          fontFamily: D,
+          fontSize: 32,
+          fontWeight: 600,
           color: "#1a1a1a",
           marginBottom: 10,
           letterSpacing: 1,
@@ -230,7 +231,6 @@ export default function Checkout() {
   if (cart.length === 0) {
     return (
       <>
-        <style>{`@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap');`}</style>
         <Hero />
         <BreadcrumbBar />
         <EmptyCheckout />
@@ -241,8 +241,7 @@ export default function Checkout() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap');
-        .checkout-page { font-family:'Lato','Segoe UI',sans-serif; background:#fff; color:#333; overflow-x:hidden; }
+        .checkout-page { font-family:var(--font-body); background:#fff; color:#333; overflow-x:hidden; }
         .checkout-wrap { max-width:1200px; margin:0 auto; padding:0 24px 60px; }
         .checkout-layout { display:grid; grid-template-columns:minmax(0, 1.45fr) minmax(320px, 0.95fr); gap:24px; }
         .checkout-panel { background:#fff; border:1px solid #efefef; border-radius:4px; padding:28px 24px; }
@@ -262,7 +261,7 @@ export default function Checkout() {
           border:1px solid #efefef; flex-shrink:0; display:flex; align-items:center; justify-content:center;
         }
         .checkout-item-name {
-          font-family:${J}; font-size:13px; font-weight:700; color:#1a1a1a;
+          font-family:${D}; font-size:22px; font-weight:600; color:#1a1a1a;
           margin:0 0 6px; letter-spacing:.5px; text-transform:uppercase;
         }
         .checkout-item-meta { font-size:12px; color:#999; margin:0 0 4px; }
@@ -279,6 +278,8 @@ export default function Checkout() {
           .checkout-wrap { padding:0 16px 48px; }
           .checkout-grid { grid-template-columns:1fr; }
           .checkout-panel { padding:22px 16px; }
+          .checkout-item { flex-wrap:wrap; }
+          .checkout-item > div:last-child { width:100%; text-align:left; }
         }
       `}</style>
 
@@ -289,9 +290,9 @@ export default function Checkout() {
         <div className="checkout-wrap">
           <h2
             style={{
-              fontFamily: J,
-              fontSize: 18,
-              fontWeight: 700,
+              fontFamily: D,
+              fontSize: 34,
+              fontWeight: 600,
               color: "#1a1a1a",
               letterSpacing: 1,
               textTransform: "uppercase",
@@ -306,7 +307,7 @@ export default function Checkout() {
 
           <div className="checkout-layout">
             <div className="checkout-panel">
-              <p style={{ fontFamily: J, fontSize: 14, fontWeight: 700, color: "#1a1a1a", marginBottom: 8, letterSpacing: 0.5 }}>
+              <p style={{ fontFamily: D, fontSize: 28, fontWeight: 600, color: "#1a1a1a", marginBottom: 8, letterSpacing: 0.5 }}>
                 Customer Information
               </p>
               <p style={{ fontSize: 13, color: "#999", marginBottom: 22 }}>
@@ -369,7 +370,7 @@ export default function Checkout() {
             </div>
 
             <div className="checkout-panel" style={{ background: "#fafafa" }}>
-              <p style={{ fontFamily: J, fontSize: 14, fontWeight: 700, color: "#1a1a1a", marginBottom: 18, letterSpacing: 0.5 }}>
+              <p style={{ fontFamily: D, fontSize: 28, fontWeight: 600, color: "#1a1a1a", marginBottom: 18, letterSpacing: 0.5 }}>
                 Order Summary
               </p>
 

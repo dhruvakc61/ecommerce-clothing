@@ -6,6 +6,7 @@
 
 :root {
   color-scheme: light;
+  --nav-height: 82px;
   --font-body: "DM Sans", "Segoe UI", sans-serif;
   --font-display: "Cormorant Garamond", Georgia, serif;
   --theme-bg: #f6f1ea;
@@ -23,6 +24,12 @@
   --theme-dark-soft: #312720;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
   background: var(--theme-bg);
   width: 100%;
@@ -31,7 +38,7 @@ html {
 }
 
 body {
-  margin-top: 80px;
+  margin-top: var(--nav-height);
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
@@ -46,6 +53,13 @@ body {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
 }
 
 a,
@@ -67,4 +81,10 @@ a {
 
 .container {
   @apply max-w-6xl mx-auto;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --nav-height: 76px;
+  }
 }

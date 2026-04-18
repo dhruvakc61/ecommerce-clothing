@@ -71,7 +71,7 @@ export default function Navbar() {
         .boshop-nav a { text-decoration: none; }
 
         /* Main Nav */
-       .main-nav {
+        .main-nav {
   position: fixed;
   top: 0;
   z-index: 1000;
@@ -93,7 +93,6 @@ export default function Navbar() {
   box-shadow: 0 10px 25px rgba(36, 28, 23, 0.08);
 }
         .main-nav-inner {
-          
           margin: 0 auto;
           padding: 0 20px;
           height: 82px;
@@ -238,6 +237,7 @@ export default function Navbar() {
           display: flex;
           align-items: center;
           gap: 16px;
+          flex-shrink: 0;
         }
         .nav-icon-btn {
           background: none;
@@ -532,9 +532,10 @@ export default function Navbar() {
           display: none;
           background: var(--theme-surface);
           border-top: 1px solid var(--theme-border);
-          padding: 16px 20px;
+          padding: 16px 20px 20px;
           flex-direction: column;
           gap: 4px;
+          box-shadow: 0 16px 30px rgba(36, 28, 23, 0.08);
         }
         .mobile-menu a, .mobile-menu button {
           display: block;
@@ -557,15 +558,67 @@ export default function Navbar() {
         .mobile-menu a:hover, .mobile-menu button:hover { color: var(--theme-accent); }
 
         @media (max-width: 768px) {
+          .main-nav {
+            padding: 0 12px;
+          }
           .nav-links { display: none; }
           .hamburger { display: flex; }
           .mobile-menu { display: flex; }
-          .cart-sidebar { width: 100%; max-width: 340px; }
+          .cart-sidebar { width: min(100%, 360px); max-width: none; }
           .main-nav-inner { height: 76px; }
           .logo img { width: clamp(138px, 36vw, 184px); max-height: 54px; }
+          .nav-icons { gap: 10px; }
+          .nav-icon-btn,
+          .profile-menu-btn {
+            padding: 6px;
+          }
           .profile-dropdown {
             right: -10px;
             min-width: 200px;
+          }
+          .search-bar {
+            padding: 12px 16px;
+          }
+          .search-bar form {
+            max-width: none;
+          }
+        }
+        @media (max-width: 540px) {
+          .main-nav {
+            padding: 0 8px;
+          }
+          .main-nav-inner {
+            padding: 0 8px;
+            gap: 10px;
+          }
+          .logo img {
+            width: clamp(112px, 31vw, 156px);
+            max-height: 48px;
+          }
+          .nav-icons {
+            gap: 4px;
+          }
+          .nav-icon-btn svg,
+          .profile-menu-btn svg {
+            width: 17px;
+            height: 17px;
+          }
+          .hamburger {
+            padding: 6px 4px;
+          }
+          .search-bar form {
+            flex-direction: column;
+            gap: 10px;
+          }
+          .search-bar input {
+            border-right: 1px solid var(--theme-border);
+          }
+          .search-bar button {
+            width: 100%;
+          }
+          .mobile-menu {
+            padding-left: 16px;
+            padding-right: 16px;
           }
         }
       `}</style>
@@ -704,7 +757,7 @@ export default function Navbar() {
               ) : (
                 cart.map(item => (
                   <div key={item.cartItemId || item._id} className="cart-item-row">
-                    <img src={item.image} alt={item.name} className="cart-item-img" />
+                    <img src={item.image || item.thumbnail} alt={item.name} className="cart-item-img" />
                     <div className="cart-item-info">
                       <p className="cart-item-name">{item.name}</p>
                       <p className="cart-item-price">${item.price?.toFixed(2)} USD</p>

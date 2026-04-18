@@ -4,7 +4,8 @@ import useCart from "../hooks/useCart";
 import formatCurrency from "../utils/formatCurrency";
 
 const VALID_COUPONS  = { SAVE10: 10, SAVE20: 20, BOSHOP: 15 };
-const J              = "'Josefin Sans','Segoe UI',sans-serif";
+const J              = "var(--font-body)";
+const D              = "var(--font-display)";
 const FREE_SHIP_MIN  = 50;
 
 /* ─── tiny helpers ─────────────────────────────────────────── */
@@ -58,7 +59,7 @@ function Hero() {
         alt="" style={{ width:"100%", height:"100%", objectFit:"cover", opacity:.4 }}/>
       <div style={{ position:"absolute", inset:0, display:"flex",
         alignItems:"center", padding:"0 clamp(16px, 4vw, 60px)" }}>
-        <h1 style={{ fontFamily:J, fontSize:"clamp(24px,4vw,40px)", fontWeight:700,
+        <h1 style={{ fontFamily:D, fontSize:"clamp(24px,4vw,40px)", fontWeight:600,
           color:"#fff", letterSpacing:4, textTransform:"uppercase", margin:0 }}>
           Shopping Cart
         </h1>
@@ -96,7 +97,7 @@ function EmptyCart() {
         <line x1="3" y1="6" x2="21" y2="6"/>
         <path d="M16 10a4 4 0 0 1-8 0"/>
       </svg>
-      <h2 style={{ fontFamily:J, fontSize:20, fontWeight:700, color:"#1a1a1a",
+      <h2 style={{ fontFamily:D, fontSize:32, fontWeight:600, color:"#1a1a1a",
         marginBottom:10, letterSpacing:1, textTransform:"uppercase" }}>
         Your cart is empty
       </h2>
@@ -134,7 +135,7 @@ function CartRow({ item }) {
   return (
     <tr style={{ borderBottom:"1px solid #f0f0f0" }}>
       {/* Image */}
-      <td style={{ padding:"18px 16px", verticalAlign:"middle" }}>
+      <td data-label="Product" style={{ padding:"18px 16px", verticalAlign:"middle" }}>
         <Link to={`/products/${pid}`}>
           <div style={{ width:76, height:76, borderRadius:8, overflow:"hidden",
             background:"#f8f6f3", border:"1px solid #efefef",
@@ -154,9 +155,9 @@ function CartRow({ item }) {
       </td>
 
       {/* Name + meta */}
-      <td style={{ padding:"18px 16px", verticalAlign:"middle" }}>
+      <td data-label="Details" style={{ padding:"18px 16px", verticalAlign:"middle" }}>
         <Link to={`/products/${pid}`} style={{ textDecoration:"none" }}>
-          <p style={{ fontFamily:J, fontSize:13, fontWeight:700, color:"#1a1a1a",
+          <p style={{ fontFamily:D, fontSize:21, fontWeight:600, color:"#1a1a1a",
             margin:"0 0 8px", letterSpacing:.5, textTransform:"uppercase" }}>
             {item.name}
           </p>
@@ -179,7 +180,7 @@ function CartRow({ item }) {
       </td>
 
       {/* Quantity */}
-      <td style={{ padding:"18px 16px", verticalAlign:"middle", textAlign:"center" }}>
+      <td data-label="Quantity" style={{ padding:"18px 16px", verticalAlign:"middle", textAlign:"center" }}>
         <div style={{ display:"inline-flex", alignItems:"center",
           border:"1px solid #e0e0e0", borderRadius:4, overflow:"hidden", background:"#fff" }}>
           <button onClick={() => updateQty(lineId, item.qty - 1)}
@@ -194,13 +195,13 @@ function CartRow({ item }) {
       </td>
 
       {/* Unit price */}
-      <td style={{ padding:"18px 16px", verticalAlign:"middle", textAlign:"center",
+      <td data-label="Unit Price" style={{ padding:"18px 16px", verticalAlign:"middle", textAlign:"center",
         fontFamily:J, fontSize:14, fontWeight:700, color:"#1a1a1a" }}>
         {formatCurrency(price)}
       </td>
 
       {/* Delivery */}
-      <td style={{ padding:"18px 16px", verticalAlign:"middle", textAlign:"center" }}>
+      <td data-label="Delivery" style={{ padding:"18px 16px", verticalAlign:"middle", textAlign:"center" }}>
         {price >= FREE_SHIP_MIN
           ? <span style={{ fontFamily:J, fontSize:11, fontWeight:700,
               color:"#4caf50", letterSpacing:1 }}>FREE SHIPPING</span>
@@ -209,13 +210,13 @@ function CartRow({ item }) {
       </td>
 
       {/* Subtotal */}
-      <td style={{ padding:"18px 16px", verticalAlign:"middle", textAlign:"center",
+      <td data-label="Subtotal" style={{ padding:"18px 16px", verticalAlign:"middle", textAlign:"center",
         fontFamily:J, fontSize:14, fontWeight:700, color:"#1a1a1a" }}>
         {formatCurrency(price * item.qty)}
       </td>
 
       {/* Remove */}
-      <td style={{ padding:"18px 16px", verticalAlign:"middle", textAlign:"center" }}>
+      <td data-label="Remove" style={{ padding:"18px 16px", verticalAlign:"middle", textAlign:"center" }}>
         <button onClick={() => removeFromCart(lineId)}
           onMouseEnter={() => sHovX(true)} onMouseLeave={() => sHovX(false)}
           style={{ width:30, height:30, borderRadius:"50%",
@@ -278,7 +279,6 @@ export default function Cart() {
 
   if (cart.length === 0) return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap');`}</style>
       <Hero/><BreadcrumbBar/><EmptyCart/>
     </>
   );
@@ -286,9 +286,8 @@ export default function Cart() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap');
-        .cart-page { font-family:'Lato','Segoe UI',sans-serif; background:#fff; color:#333; margin-top:80px; }
-        .cart-wrap { max-width:1200px;  auto; padding:0 24px 60px; }
+        .cart-page { font-family:var(--font-body); background:#fff; color:#333; }
+        .cart-wrap { max-width:1200px; margin:0 auto; padding:0 24px 60px; }
         .cart-table { width:100%; border-collapse:collapse; border:1px solid #e8e8e8; border-radius:4px; overflow:hidden; }
         .cart-table tr:last-child td { border-bottom:none; }
         .cart-actions { display:flex; justify-content:space-between; align-items:center; margin-top:20px; flex-wrap:wrap; gap:12px; }
@@ -304,9 +303,41 @@ export default function Cart() {
           .cart-info-strip { flex-direction:column; }
         }
         @media(max-width:700px){
+          .cart-wrap { padding:0 16px 48px; }
           .cart-table thead { display:none; }
-          .cart-table tr { display:block; border-bottom:1px solid #f0f0f0; padding:12px 0; }
-          .cart-table td { display:flex; align-items:center; justify-content:space-between; border:none; padding:6px 12px; }
+          .cart-table,
+          .cart-table tbody { display:grid; gap:16px; border:none; }
+          .cart-table tr {
+            display:grid;
+            gap:8px;
+            border:1px solid #ece4d9;
+            border-radius:18px;
+            padding:14px 0;
+            background:linear-gradient(180deg, #fff 0%, #fcfaf6 100%);
+            box-shadow:0 14px 28px rgba(36,28,23,.04);
+          }
+          .cart-table td {
+            display:flex;
+            align-items:flex-start;
+            justify-content:space-between;
+            gap:12px;
+            border:none;
+            padding:8px 14px;
+          }
+          .cart-table td::before {
+            content:attr(data-label);
+            font-size:10px;
+            letter-spacing:.18em;
+            text-transform:uppercase;
+            color:var(--theme-muted);
+            font-weight:700;
+            padding-top:6px;
+            flex:0 0 88px;
+          }
+          .cart-table td[data-label="Product"]::before,
+          .cart-table td[data-label="Remove"]::before {
+            padding-top:0;
+          }
         }
       `}</style>
 
@@ -317,7 +348,7 @@ export default function Cart() {
         <div className="cart-wrap">
 
           {/* Section title */}
-          <h2 style={{ fontFamily:J, fontSize:18, fontWeight:700, color:"#1a1a1a",
+          <h2 style={{ fontFamily:D, fontSize:34, fontWeight:600, color:"#1a1a1a",
             letterSpacing:1, textTransform:"uppercase", marginBottom:6,
             paddingBottom:14, borderBottom:"3px solid #e8b14f", display:"inline-block" }}>
             Shopping Cart

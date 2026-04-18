@@ -38,7 +38,8 @@ const FOOTER_HIDDEN_PAGES = ["/login", "/register"];
 
 function App() {
   const { pathname } = useLocation();
-  const isFullWidth = FULL_WIDTH_PAGES.includes(pathname);
+  const isProductDetailPage = pathname.startsWith("/products/");
+  const isFullWidth = FULL_WIDTH_PAGES.includes(pathname) || isProductDetailPage;
   const showFooter = !FOOTER_HIDDEN_PAGES.includes(pathname);
   const constrainedMainStyle = {
     flex: 1,
