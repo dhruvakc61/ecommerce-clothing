@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useCart from "../hooks/useCart";
 import useAuth from "../hooks/useAuth";
@@ -8,6 +8,45 @@ import formatCurrency from "../utils/formatCurrency";
 const J = "var(--font-body)";
 const D = "var(--font-display)";
 const FREE_SHIP_MIN = 100;
+
+function stripDigits(value) {
+  return String(value || "").replace(/\D/g, "");
+}
+
+function inferCardBrand(number) {
+  const digits = stripDigits(number);
+  if (/^4/.test(digits)) return "Visa";
+  if (/^5[1-5]/.test(digits)) return "Mastercard";
+  if (/^3[47]/.test(digits)) return "Amex";
+  if (/^6(?:011|5)/.test(digits)) return "Discover";
+  return "Card";
+}
+
+function formatCardNumber(value) {
+  const digits = stripDigits(value).slice(0, 19);
+  return digits.replace(/(.{4})/g, "$1 ").trim();
+}
+
+function formatExpiry(value) {
+  const digits = stripDigits(value).slice(0, 4);
+  if (digits.length <= 2) return digits;
+  return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+}
+
+function isExpiryValid(value) {
+  const [monthRaw, yearRaw] = String(value || "").split("/");
+  const month = Number(monthRaw);
+  const year = Number(yearRaw);
+
+  if (!month || !year || month < 1 || month > 12) {
+    return false;
+  }
+
+  const now = new Date();
+  const currentYear = now.getFullYear() % 100;
+  const currentMonth = now.getMonth() + 1;
+  return year > currentYear || (year === currentYear && month >= currentMonth);
+}
 
 const GoldBtn = ({ children, onClick, disabled = false, style = {}, type = "button" }) => {
   const [hover, setHover] = useState(false);
@@ -51,12 +90,12 @@ function Hero() {
         background: "#111",
         marginBottom: 0,
       }}
-      >
-        <img
-          src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1600&q=80"
-          alt=""
-          style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.4 }}
-        />
+    >
+      <img
+        src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1600&q=80"
+        alt=""
+        style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.4 }}
+      />
       <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", padding: "0 clamp(16px, 4vw, 60px)" }}>
         <h1
           style={{
@@ -157,6 +196,7 @@ export default function Checkout() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [form, setForm] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
@@ -169,30 +209,79 @@ export default function Checkout() {
     country: "USA",
     notes: "",
   });
+  const [payment, setPayment] = useState({
+    cardholderName: user?.name || "",
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
+  });
 
   const shipping = totals.subtotal > FREE_SHIP_MIN ? 0 : totals.subtotal > 0 ? 10 : 0;
   const discount = totals.discount || 0;
   const total = Math.max(0, totals.subtotal - discount + shipping);
 
+  const cardBrand = useMemo(() => inferCardBrand(payment.cardNumber), [payment.cardNumber]);
+
   const updateField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+    setSubmitError("");
+  };
+
+  const updatePayment = (field, value) => {
+    setSubmitError("");
+    setPayment((prev) => ({
+      ...prev,
+      [field]:
+        field === "cardNumber"
+          ? formatCardNumber(value)
+          : field === "expiry"
+            ? formatExpiry(value)
+            : field === "cvv"
+              ? stripDigits(value).slice(0, 4)
+              : value,
+    }));
   };
 
   const validateForm = () => {
     const requiredFields = ["fullName", "email", "phone", "address", "city", "state", "postalCode", "country"];
     const missing = requiredFields.find((field) => !String(form[field]).trim());
     if (missing) {
-      window.alert("Please complete all required checkout details.");
-      return false;
+      return "Please complete all required shipping details.";
     }
-    return true;
+
+    if (!String(payment.cardholderName).trim()) {
+      return "Please enter the cardholder name.";
+    }
+
+    const cardDigits = stripDigits(payment.cardNumber);
+    if (cardDigits.length < 13 || cardDigits.length > 19) {
+      return "Please enter a valid card number.";
+    }
+
+    if (!isExpiryValid(payment.expiry)) {
+      return "Please enter a valid card expiry date.";
+    }
+
+    if (String(payment.cvv).length < 3) {
+      return "Please enter a valid CVV.";
+    }
+
+    return "";
   };
 
   const handleOrder = async () => {
-    if (!validateForm()) return;
+    const validationError = validateForm();
+    if (validationError) {
+      setSubmitError(validationError);
+      return;
+    }
 
     try {
       setLoading(true);
+      setSubmitError("");
+
+      const cardDigits = stripDigits(payment.cardNumber);
+      const [expMonth = "", expYear = ""] = payment.expiry.split("/");
 
       const order = {
         items: cart,
@@ -213,7 +302,16 @@ export default function Checkout() {
           country: form.country.trim(),
           notes: form.notes.trim(),
         },
-        user: user?._id,
+        payment: {
+          method: "Credit Card",
+          status: "Authorized",
+          transactionId: `CARD-${Date.now()}`,
+          last4: cardDigits.slice(-4),
+          brand: inferCardBrand(cardDigits),
+          cardholderName: payment.cardholderName.trim(),
+          expMonth,
+          expYear: expYear.length === 2 ? `20${expYear}` : expYear,
+        },
         status: "Pending",
       };
 
@@ -222,7 +320,7 @@ export default function Checkout() {
       clearPromo();
       navigate("/order-success");
     } catch (error) {
-      window.alert(error?.response?.data?.message || "We couldn't place your order. Please try again.");
+      setSubmitError(error?.response?.data?.message || "We couldn't place your order. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -254,6 +352,53 @@ export default function Checkout() {
         }
         .checkout-input:focus, .checkout-textarea:focus, .checkout-select:focus { border-color:#e8b14f; }
         .checkout-textarea { min-height:110px; resize:vertical; }
+        .checkout-section-divider {
+          border-top:1px solid #efefef;
+          margin:28px 0 24px;
+          padding-top:28px;
+        }
+        .checkout-card-row {
+          display:grid;
+          grid-template-columns:minmax(0, 1fr) 124px;
+          gap:16px;
+        }
+        .checkout-payment-pill {
+          display:inline-flex;
+          align-items:center;
+          gap:10px;
+          padding:10px 14px;
+          border-radius:999px;
+          background:#faf7f1;
+          border:1px solid #eee3d1;
+          color:#7a6d5d;
+          font-size:12px;
+          margin-bottom:18px;
+        }
+        .checkout-payment-dot {
+          width:8px;
+          height:8px;
+          border-radius:999px;
+          background:#4caf50;
+        }
+        .checkout-error {
+          margin-top:14px;
+          padding:12px 14px;
+          background:#fff4f4;
+          border:1px solid #f1c5c5;
+          color:#b63f3f;
+          border-radius:4px;
+          font-size:13px;
+          line-height:1.6;
+        }
+        .checkout-card-meta {
+          margin-top:14px;
+          display:flex;
+          justify-content:space-between;
+          gap:12px;
+          flex-wrap:wrap;
+          color:#8a7b6c;
+          font-size:12px;
+        }
         .checkout-item { display:flex; gap:12px; padding:12px 0; border-bottom:1px solid #f0f0f0; }
         .checkout-item:last-child { border-bottom:none; }
         .checkout-item-media {
@@ -265,7 +410,7 @@ export default function Checkout() {
           margin:0 0 6px; letter-spacing:.5px; text-transform:uppercase;
         }
         .checkout-item-meta { font-size:12px; color:#999; margin:0 0 4px; }
-        .checkout-summary-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+        .checkout-summary-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:12px; }
         .checkout-summary-divider { border-top:1px solid #e8e8e8; padding-top:14px; margin-top:4px; }
         .checkout-note {
           margin-top:16px; padding:14px 16px; background:#faf7f1; border:1px solid #eee3d1;
@@ -276,7 +421,8 @@ export default function Checkout() {
         }
         @media(max-width:640px){
           .checkout-wrap { padding:0 16px 48px; }
-          .checkout-grid { grid-template-columns:1fr; }
+          .checkout-grid,
+          .checkout-card-row { grid-template-columns:1fr; }
           .checkout-panel { padding:22px 16px; }
           .checkout-item { flex-wrap:wrap; }
           .checkout-item > div:last-child { width:100%; text-align:left; }
@@ -367,6 +513,77 @@ export default function Checkout() {
                   />
                 </div>
               </div>
+
+              <div className="checkout-section-divider">
+                <p style={{ fontFamily: D, fontSize: 28, fontWeight: 600, color: "#1a1a1a", marginBottom: 8, letterSpacing: 0.5 }}>
+                  Payment Details
+                </p>
+                <p style={{ fontSize: 13, color: "#999", marginBottom: 22 }}>
+                  Enter your card details below. For safety, only masked card information is stored with the order.
+                </p>
+
+                <div className="checkout-payment-pill">
+                  <span className="checkout-payment-dot" />
+                  Credit Card Payment
+                </div>
+
+                <div className="checkout-grid">
+                  <div className="checkout-field full">
+                    <label className="checkout-label">Cardholder Name *</label>
+                    <input
+                      type="text"
+                      value={payment.cardholderName}
+                      onChange={(e) => updatePayment("cardholderName", e.target.value)}
+                      className="checkout-input"
+                      placeholder="Name on card"
+                    />
+                  </div>
+
+                  <div className="checkout-field full">
+                    <label className="checkout-label">Card Number *</label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="cc-number"
+                      value={payment.cardNumber}
+                      onChange={(e) => updatePayment("cardNumber", e.target.value)}
+                      className="checkout-input"
+                      placeholder="1234 5678 9012 3456"
+                    />
+                  </div>
+
+                  <div className="checkout-field">
+                    <label className="checkout-label">Expiry *</label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="cc-exp"
+                      value={payment.expiry}
+                      onChange={(e) => updatePayment("expiry", e.target.value)}
+                      className="checkout-input"
+                      placeholder="MM/YY"
+                    />
+                  </div>
+
+                  <div className="checkout-field">
+                    <label className="checkout-label">CVV *</label>
+                    <input
+                      type="password"
+                      inputMode="numeric"
+                      autoComplete="cc-csc"
+                      value={payment.cvv}
+                      onChange={(e) => updatePayment("cvv", e.target.value)}
+                      className="checkout-input"
+                      placeholder="123"
+                    />
+                  </div>
+                </div>
+
+                <div className="checkout-card-meta">
+                  <span>Card Type: {cardBrand}</span>
+                  <span>Secure entry. CVV is never stored.</span>
+                </div>
+              </div>
             </div>
 
             <div className="checkout-panel" style={{ background: "#fafafa" }}>
@@ -379,7 +596,7 @@ export default function Checkout() {
                   const pid = item._id || item.id;
                   const price = item.price ?? item.sale_price ?? 0;
                   return (
-                    <div className="checkout-item" key={pid}>
+                    <div className="checkout-item" key={item.cartItemId || pid}>
                       <Link to={`/products/${pid}`} className="checkout-item-media">
                         {item.image || item.thumbnail ? (
                           <img src={item.image || item.thumbnail} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -421,7 +638,7 @@ export default function Checkout() {
                 </span>
               </div>
 
-              {discount > 0 && (
+              {discount > 0 ? (
                 <div className="checkout-summary-row">
                   <span style={{ fontSize: 13, color: "#4caf50" }}>
                     Discount {promo.code ? `(${promo.code})` : ""}
@@ -430,7 +647,14 @@ export default function Checkout() {
                     - {formatCurrency(discount)}
                   </span>
                 </div>
-              )}
+              ) : null}
+
+              <div className="checkout-summary-row">
+                <span style={{ fontSize: 13, color: "#999" }}>Payment Method</span>
+                <span style={{ fontFamily: J, fontSize: 14, fontWeight: 600, color: "#1a1a1a" }}>
+                  {cardBrand} ending {stripDigits(payment.cardNumber).slice(-4) || "----"}
+                </span>
+              </div>
 
               <div className="checkout-summary-row checkout-summary-divider">
                 <span style={{ fontFamily: J, fontSize: 15, fontWeight: 700, color: "#1a1a1a", letterSpacing: 1, textTransform: "uppercase" }}>
@@ -444,6 +668,8 @@ export default function Checkout() {
               <GoldBtn onClick={handleOrder} disabled={loading} style={{ width: "100%", textAlign: "center", display: "block", padding: "14px" }}>
                 {loading ? "Processing..." : "Place Order"}
               </GoldBtn>
+
+              {submitError ? <div className="checkout-error">{submitError}</div> : null}
 
               <div className="checkout-note">
                 Orders over {formatCurrency(FREE_SHIP_MIN)} qualify for free shipping. We will use your phone number for delivery updates and any urgent order clarifications.

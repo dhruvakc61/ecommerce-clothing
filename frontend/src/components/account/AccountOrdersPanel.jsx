@@ -248,7 +248,7 @@ export default function AccountOrdersPanel({
         }
         .account-order-meta {
           display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
+          grid-template-columns: repeat(4, minmax(0, 1fr));
           gap: 12px;
           margin-bottom: 18px;
         }
@@ -473,6 +473,14 @@ export default function AccountOrdersPanel({
                         {Number(order.shipping || 0) === 0
                           ? "Free Shipping"
                           : formatCurrency(Number(order.shipping || 0))}
+                      </div>
+                    </div>
+                    <div className="account-order-meta-card">
+                      <span className="account-order-meta-label">Payment</span>
+                      <div className="account-order-meta-value">
+                        {order.payment?.brand
+                          ? `${order.payment.brand} •••• ${order.payment.last4 || "----"}`
+                          : order.payment?.method || "Credit Card"}
                       </div>
                     </div>
                   </div>

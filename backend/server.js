@@ -1,5 +1,3 @@
-// Placeholder for server.js
-// Full implementation will be added later.
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -20,20 +18,37 @@ connectDB();
 
 const app = express();
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (
-      !origin ||
-      origin.includes("localhost") ||
-      origin.includes("vercel.app")
-    ) {
+const configuredOrigins = [
+  process.env.FRONTEND_URL,
+  ...(process.env.ALLOWED_ORIGINS || "").split(","),
+]
+  .map((origin) => String(origin || "").trim().replace(/\/+$/, ""))
+  .filter(Boolean);
+
+function isAllowedOrigin(origin) {
+  if (!origin) return true;
+
+  const normalizedOrigin = String(origin).replace(/\/+$/, "");
+  if (normalizedOrigin.includes("localhost") || normalizedOrigin.includes("vercel.app")) {
+    return true;
+  }
+
+  return configuredOrigins.includes(normalizedOrigin);
+}
+
+const corsOptions = {
+  origin(origin, callback) {
+    if (isAllowedOrigin(origin)) {
       callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+      return;
     }
+    callback(new Error("Not allowed by CORS"));
   },
-  credentials: true
-}));
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -51,4 +66,3 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, console.log(`Server running on port ${PORT}`));
-

@@ -1,5 +1,3 @@
-// Placeholder for Order.js
-// Full implementation will be added later.
 import mongoose from "mongoose";
 import { assignOrderReference } from "../utils/orderReference.js";
 
@@ -38,6 +36,16 @@ const orderSchema = mongoose.Schema(
       postalCode: String,
       country: String,
       notes: String,
+    },
+    payment: {
+      method: { type: String, default: "Credit Card" },
+      status: { type: String, default: "Pending" },
+      transactionId: String,
+      last4: String,
+      brand: String,
+      cardholderName: String,
+      expMonth: String,
+      expYear: String,
     },
   },
   { timestamps: true }

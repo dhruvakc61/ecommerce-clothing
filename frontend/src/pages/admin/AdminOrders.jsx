@@ -146,6 +146,10 @@ export default function AdminOrders() {
                         <DetailRow label="Shipping" value={formatCurrency(order.shipping || 0)} />
                         <DetailRow label="Promo Code" value={order.promoCode} />
                         <DetailRow label="Discount" value={formatCurrency(order.discount || 0)} />
+                        <DetailRow label="Payment Method" value={order.payment?.method} />
+                        <DetailRow label="Payment Status" value={order.payment?.status} />
+                        <DetailRow label="Card Brand" value={order.payment?.brand} />
+                        <DetailRow label="Card Last 4" value={order.payment?.last4} />
                         <DetailRow label="Grand Total" value={formatCurrency(order.total || 0)} />
                       </div>
                     </div>

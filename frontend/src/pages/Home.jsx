@@ -31,17 +31,6 @@ const slides = [
   },
 ];
 
-const mockProducts = [
-  { _id: "1", name: "Child Special T-Shirts", price: 199, oldPrice: 299, badge: "Sale", img: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500&q=80" },
-  { _id: "2", name: "Ladies Sandal Clean", price: 199, badge: null, img: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80" },
-  { _id: "3", name: "Leather Bag Inside", price: 199, oldPrice: 299, badge: "Sale", img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&q=80" },
-  { _id: "4", name: "Neck Scarf Full", price: 199, oldPrice: 299, badge: "Sale", img: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=500&q=80" },
-  { _id: "5", name: "Men Fashion Winter", price: 199, badge: null, img: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&q=80" },
-  { _id: "6", name: "White Graphic Tee", price: 199, oldPrice: 299, badge: "Sale", img: "https://images.unsplash.com/photo-1622445275576-721325763afe?w=500&q=80" },
-  { _id: "7", name: "Denim Shorts Jeans", price: 199, badge: null, img: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=500&q=80" },
-  { _id: "8", name: "Classic Hand Bag", price: 199, badge: null, img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&q=80" },
-];
-
 const blogPosts = [
   { id: 1, date: "10 January", title: "Top Winter Fashion Trends You Need to Know", excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec faucibus maximus vehicula tellus vel tristique.", img: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=80" },
   { id: 2, date: "25 February", title: "How to Style Your Summer Wardrobe in 2025", excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec faucibus maximus vehicula tellus vel tristique.", img: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=600&q=80" },
@@ -134,7 +123,7 @@ export default function Home() {
 
   const { data: products } = useFetch("/products");
   const { addToCart } = useCart();
-  const display = products?.slice(0, 8) || mockProducts;
+  const display = Array.isArray(products) ? products.slice(0, 8) : [];
 
   // Auto-advance slider
   useEffect(() => {
@@ -368,6 +357,17 @@ export default function Home() {
           border-radius: var(--bw-radius-pill);
         }
         .bw-view-all:hover { background: var(--theme-ink); color: var(--theme-surface); }
+
+        .bw-empty-products {
+          border: 1px solid var(--theme-border);
+          background: rgba(255, 253, 249, 0.86);
+          border-radius: var(--bw-radius-md);
+          padding: clamp(22px, 3vw, 30px);
+          text-align: center;
+          color: var(--theme-muted);
+          font-size: 14px;
+          line-height: 1.8;
+        }
 
         /* ═══ ABOUT ═══ */
         .bw-about-grid {
@@ -695,9 +695,13 @@ export default function Home() {
                 <button key={i} className={`bw-tab${activeTab === i ? " on" : ""}`} onClick={() => setActiveTab(i)}>{t}</button>
               ))}
             </div>*/}
-            <div className="bw-pg4">
-              {display.map(p => <ProductCard key={p._id} product={p} onAddToCart={addToCart} />)}
-            </div>
+            {display.length > 0 ? (
+              <div className="bw-pg4">
+                {display.map(p => <ProductCard key={p._id} product={p} onAddToCart={addToCart} />)}
+              </div>
+            ) : (
+              <div className="bw-empty-products">No products available yet.</div>
+            )}
             <div style={{ textAlign: "center" }}>
               <Link to="/products" className="bw-view-all">View All Products</Link>
             </div>
@@ -777,9 +781,13 @@ BAYA Clothing — Woven with purpose, defined by simplicity.
               <div className="bw-bar" />
               <p className="bw-sub">Loved by thousands of customers around the world.</p>
             </div>
-            <div className="bw-pg4">
-              {display.map(p => <ProductCard key={p._id + "b"} product={p} onAddToCart={addToCart} />)}
-            </div>
+            {display.length > 0 ? (
+              <div className="bw-pg4">
+                {display.map(p => <ProductCard key={p._id + "b"} product={p} onAddToCart={addToCart} />)}
+              </div>
+            ) : (
+              <div className="bw-empty-products">Popular products will appear here once items are added.</div>
+            )}
           </div>
         </div>
 

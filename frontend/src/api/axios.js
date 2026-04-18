@@ -1,19 +1,33 @@
-// Placeholder for axios.js
-// Full implementation will be added later.
 import axios from "axios";
-const apiBaseUrl = import.meta.env.VITE_API_URL;
+const rawApiBaseUrl = import.meta.env.VITE_API_URL;
 
-if (!apiBaseUrl) {
+if (!rawApiBaseUrl) {
   throw new Error("VITE_API_URL is required for the frontend to connect to the MERN backend.");
 }
 
+function normalizeBaseUrl(value) {
+  return String(value || "")
+    .trim()
+    .replace(/\/+$/, "")
+    .replace(/\/api$/i, "");
+}
+
+function normalizeApiPath(value) {
+  if (!value || /^https?:\/\//i.test(value)) {
+    return value;
+  }
+
+  const withLeadingSlash = String(value).startsWith("/") ? String(value) : `/${value}`;
+  return withLeadingSlash.startsWith("/api") ? withLeadingSlash : `/api${withLeadingSlash}`;
+}
+
 const realApi = axios.create({
-  baseURL: apiBaseUrl,
+  baseURL: normalizeBaseUrl(rawApiBaseUrl),
   withCredentials: true,
 });
 
-// Attach the JWT token if present (real API only).
 realApi.interceptors.request.use((config) => {
+  config.url = normalizeApiPath(config.url);
   const token = localStorage.getItem("auth_token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
