@@ -22,7 +22,7 @@ export default function AdminOrders() {
 
   const updateStatus = async (orderId, status) => {
     try {
-      await api.put(`/orders/${orderId}`, { status });
+      await api.put(`/api/orders/${orderId}`, { status });
       refetch();
     } catch (err) {
       window.alert(err.response?.data?.message || "Failed to update status.");

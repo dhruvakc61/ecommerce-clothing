@@ -5,14 +5,14 @@ import api from "../../api/axios";
 import { useState } from "react";
 
 export default function AdminProducts() {
-  const { data: products, loading, error, refetch } = useFetch("/products");
+  const { data: products, loading, error, refetch } = useFetch("/api/products");
   const [busyId, setBusyId] = useState(null);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this product?")) return;
     try {
       setBusyId(id);
-      await api.delete(`/products/${id}`);
+      await api.delete(`/api/products/${id}`);
       refetch();
     } catch (err) {
       window.alert(err.response?.data?.message || "Failed to delete product.");

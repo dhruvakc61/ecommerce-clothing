@@ -2,7 +2,7 @@ import AdminSidebar from "../../components/admin/AdminSidebar";
 import useFetch from "../../hooks/useFetch";
 
 export default function AdminUsers() {
-  const { data: users, loading, error } = useFetch("/users");
+  const { data: users, loading, error } = useFetch("/api/users");
 
   return (
     <div className="flex gap-6">

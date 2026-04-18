@@ -17,7 +17,7 @@ export default function AdminProductEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isNew = id === "new";
-  const { data: product } = useFetch(isNew ? null : `/products/${id}`, !isNew);
+  const { data: product } = useFetch(isNew ? null : `/api/products/${id}`, !isNew);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -57,7 +57,7 @@ export default function AdminProductEdit() {
           stock: Number(form.stock),
         });
       } else {
-        await api.put(`/products/${id}`, {
+        await api.put(`/api/products/${id}`, {
           ...form,
           price: Number(form.price),
           stock: Number(form.stock),

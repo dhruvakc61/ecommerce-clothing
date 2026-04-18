@@ -3,7 +3,7 @@ import useFetch from "../../hooks/useFetch";
 import StatsCard from "../../components/admin/StatsCard";
 
 export default function AdminDashboard() {
-  const { data: stats, loading, error } = useFetch("/admin/stats");
+  const { data: stats, loading, error } = useFetch("/api/admin/stats");
 
   return (
     <div className="flex gap-6 margin-top:80px">
