@@ -18,7 +18,7 @@ function DetailRow({ label, value }) {
 
 export default function AdminOrders() {
   const [openOrderId, setOpenOrderId] = useState(null);
-  const { data: orders, loading, error, refetch } = useFetch("/orders");
+  const { data: orders, loading, error, refetch } = useFetch("/api/orders");
 
   const updateStatus = async (orderId, status) => {
     try {

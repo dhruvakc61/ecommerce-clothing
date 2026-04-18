@@ -51,7 +51,7 @@ export default function AdminProductEdit() {
     try {
       setSaving(true);
       if (isNew) {
-        await api.post("/products", {
+        await api.post("/api/products", {
           ...form,
           price: Number(form.price),
           stock: Number(form.stock),
