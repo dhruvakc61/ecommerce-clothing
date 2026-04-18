@@ -4,12 +4,12 @@ import AdminSidebar from "../../components/admin/AdminSidebar";
 import api from "../../api/axios";
 
 export default function AdminProducts() {
-  const { data: products, loading, refetch } = useFetch("/products");
+  const { data: products, loading, refetch } = useFetch("/api/products");
 
   const deleteProduct = async (id) => {
     if (!confirm("Delete this product?")) return;
 
-    await api.delete(`/products/${id}`);
+    await api.delete(`/api/products/${id}`);
     refetch();
   };
 
