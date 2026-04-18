@@ -28,7 +28,7 @@ export default function AuthShell({
         .auth-shell {
           width: min(1180px, 100%);
           display: grid;
-          grid-template-columns: minmax(0, 1.02fr) minmax(420px, 0.98fr);
+          grid-template-columns: minmax(420px, 0.98fr) minmax(0, 1.02fr);
           background: rgba(255, 253, 249, 0.82);
           border: 1px solid rgba(228, 215, 200, 0.72);
           border-radius: 34px;
@@ -226,6 +226,21 @@ export default function AuthShell({
 
       <div className="auth-page">
         <div className="auth-shell">
+          <section className="auth-form-panel">
+            <div className="auth-form-inner">
+              <p className="auth-form-eyebrow">{eyebrow}</p>
+              <h1 className="auth-form-title">{title}</h1>
+              <p className="auth-form-copy">{description}</p>
+
+              <div className="auth-form-card">{children}</div>
+
+              <p className="auth-footer">
+                {footerText}{" "}
+                <Link to={footerTo}>{footerLinkText}</Link>
+              </p>
+            </div>
+          </section>
+
           <section className="auth-visual">
             <div className="auth-brand">
               <p className="auth-brand-tag">Baya Identity</p>
@@ -243,21 +258,6 @@ export default function AuthShell({
               <span className="auth-note-label">Brand Focus</span>
               <p className="auth-note-copy">
                 Clean luxury, calm browsing, and a more intentional shopping flow from sign in to checkout.
-              </p>
-            </div>
-          </section>
-
-          <section className="auth-form-panel">
-            <div className="auth-form-inner">
-              <p className="auth-form-eyebrow">{eyebrow}</p>
-              <h1 className="auth-form-title">{title}</h1>
-              <p className="auth-form-copy">{description}</p>
-
-              <div className="auth-form-card">{children}</div>
-
-              <p className="auth-footer">
-                {footerText}{" "}
-                <Link to={footerTo}>{footerLinkText}</Link>
               </p>
             </div>
           </section>
