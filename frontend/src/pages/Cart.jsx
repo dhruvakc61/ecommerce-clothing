@@ -126,14 +126,23 @@ const TH = ({ children, align = "left", width }) => (
 
 /* ─── Cart row ─────────────────────────────────────────────── */
 function CartRow({ item }) {
-  const { updateQty, removeFromCart } = useCart();
+  const { selectedItemIds, toggleCartItemSelection, updateQty, removeFromCart } = useCart();
   const [hovX, sHovX] = useState(false);
   const pid   = item._id || item.id;
   const lineId = item.cartItemId || pid;
   const price = item.price ?? item.sale_price ?? 0;
+  const isSelected = selectedItemIds.includes(lineId);
 
   return (
     <tr style={{ borderBottom:"1px solid #f0f0f0" }}>
+      <td data-label="Select" style={{ padding:"18px 16px", verticalAlign:"middle", textAlign:"center" }}>
+        <input
+          type="checkbox"
+          checked={isSelected}
+          onChange={() => toggleCartItemSelection(lineId)}
+          style={{ width:18, height:18, accentColor:"#b07a4f", cursor:"pointer" }}
+        />
+      </td>
       {/* Image */}
       <td data-label="Product" style={{ padding:"18px 16px", verticalAlign:"middle" }}>
         <Link to={`/products/${pid}`}>
@@ -251,19 +260,33 @@ function InfoCard({ icon, title, desc }) {
 
 /* ─── Main ─────────────────────────────────────────────────── */
 export default function Cart() {
-  const { cart, clearCart, totals, promo, applyPromo, clearPromo } = useCart();
+  const {
+    cart,
+    selectedCart,
+    selectedItemIds,
+    clearCart,
+    clearCartSelection,
+    selectAllCartItems,
+    totals,
+    selectedTotals,
+    promo,
+    applyPromo,
+    clearPromo,
+  } = useCart();
   const navigate = useNavigate();
 
   /* coupon */
   const [coupon,      setCoupon]      = useState(promo.code || "");
   const [couponMsg,   setCouponMsg]   = useState(null); // {text, ok}
-  const discount = totals.discount || 0;
+  const discount = selectedTotals.discount || 0;
   const couponApplied = !!promo.code && discount > 0;
 
   /* totals */
-  const subtotal = totals.subtotal;
+  const subtotal = selectedTotals.subtotal;
   const shipping = subtotal > 100 ? 0 : subtotal > 0 ? 10 : 0;
   const grandTotal = subtotal - discount + shipping;
+  const allSelected = cart.length > 0 && selectedItemIds.length === cart.length;
+  const hasSelectedItems = selectedCart.length > 0;
 
   const applyCoupon = () => {
     const code = coupon.trim().toUpperCase();
@@ -293,6 +316,18 @@ export default function Cart() {
         .cart-actions { display:flex; justify-content:space-between; align-items:center; margin-top:20px; flex-wrap:wrap; gap:12px; }
         .cart-bottom { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:48px; }
         .cart-panel { background:#fff; border:1px solid #efefef; border-radius:4px; padding:28px 24px; }
+        .cart-selection-bar {
+          margin-top:18px;
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          gap:12px;
+          flex-wrap:wrap;
+          padding:14px 16px;
+          border:1px solid #eee3d1;
+          background:#faf7f1;
+          border-radius:12px;
+        }
         .cart-input { width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:2px; font-size:13px; font-family:inherit; outline:none; box-sizing:border-box; }
         .cart-input:focus { border-color:#e8b14f; }
         .cart-select { width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:2px; font-size:13px; font-family:inherit; outline:none; background:#fff; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; cursor:pointer; box-sizing:border-box; }
@@ -335,7 +370,8 @@ export default function Cart() {
             flex:0 0 88px;
           }
           .cart-table td[data-label="Product"]::before,
-          .cart-table td[data-label="Remove"]::before {
+          .cart-table td[data-label="Remove"]::before,
+          .cart-table td[data-label="Select"]::before {
             padding-top:0;
           }
         }
@@ -358,6 +394,7 @@ export default function Cart() {
           <table className="cart-table" style={{ marginTop:24 }}>
             <thead>
               <tr>
+                <TH align="center" width={70}>Select</TH>
                 <TH width={100}>Product</TH>
                 <TH>Product Name</TH>
                 <TH align="center" width={120}>Quantity</TH>
@@ -371,6 +408,24 @@ export default function Cart() {
               {cart.map(item => <CartRow key={item.cartItemId || item._id || item.id} item={item}/>)}
             </tbody>
           </table>
+
+          <div className="cart-selection-bar">
+            <label style={{ display:"inline-flex", alignItems:"center", gap:10, fontSize:13, color:"#6d5f50", cursor:"pointer" }}>
+              <input
+                type="checkbox"
+                checked={allSelected}
+                onChange={() => (allSelected ? clearCartSelection() : selectAllCartItems())}
+                style={{ width:18, height:18, accentColor:"#b07a4f", cursor:"pointer" }}
+              />
+              <span>
+                {allSelected ? "All items selected" : "Select all items"} · {selectedCart.length} of {cart.length} chosen
+              </span>
+            </label>
+
+            <span style={{ fontSize:12, letterSpacing:".12em", textTransform:"uppercase", color:"#8d7f72", fontWeight:700 }}>
+              Checkout uses selected items only
+            </span>
+          </div>
 
           {/* ── Action buttons ── */}
           <div className="cart-actions">
@@ -421,6 +476,13 @@ export default function Cart() {
             <div className="cart-panel" style={{ background:"#fafafa" }}>
               <div style={{ display:"flex", justifyContent:"space-between",
                 alignItems:"center", marginBottom:10 }}>
+                <span style={{ fontSize:13, color:"#999" }}>Selected Items</span>
+                <span style={{ fontFamily:J, fontSize:14, fontWeight:600,
+                  color:"#1a1a1a" }}>{selectedTotals.itemCount}</span>
+              </div>
+
+              <div style={{ display:"flex", justifyContent:"space-between",
+                alignItems:"center", marginBottom:10 }}>
                 <span style={{ fontSize:13, color:"#999" }}>Subtotal</span>
                 <span style={{ fontFamily:J, fontSize:14, fontWeight:600,
                   color:"#1a1a1a" }}>{formatCurrency(subtotal)}</span>
@@ -455,10 +517,18 @@ export default function Cart() {
                   color:"#1a1a1a" }}>{formatCurrency(grandTotal)}</span>
               </div>
 
-              <GoldBtn onClick={() => navigate("/checkout")} style={{ width:"100%",
-                textAlign:"center", display:"block", padding:"14px" }}>
+              <GoldBtn
+                onClick={() => hasSelectedItems && navigate("/checkout")}
+                style={{ width:"100%", textAlign:"center", display:"block", padding:"14px", opacity: hasSelectedItems ? 1 : 0.55, cursor: hasSelectedItems ? "pointer" : "not-allowed" }}
+              >
                 Proceed to Checkout
               </GoldBtn>
+
+              {!hasSelectedItems && (
+                <p style={{ marginTop:12, fontSize:12, color:"#b66363", lineHeight:1.6 }}>
+                  Select at least one cart item before checkout.
+                </p>
+              )}
 
               <p style={{ textAlign:"center", marginTop:12, fontSize:12,
                 color:"#e05252", fontWeight:600, cursor:"pointer", fontFamily:J }}>

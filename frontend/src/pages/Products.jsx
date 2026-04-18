@@ -30,19 +30,6 @@ const PER_PAGE = 9;
 const BODY_FONT = "var(--font-body)";
 const DISPLAY_FONT = "var(--font-display)";
 
-const MOCK_PRODUCTS = Array.from({ length: 9 }, (_, i) => ({
-  id: i + 1,
-  name: ["Quibusdam ratione","Expedita excepturi","Facere molestias","Recusandae fugit","Rem voluptate","Cumque nulla","Aliquid vitae","Assumenda delectus","Lorem ipsum"][i],
-  price: [46.91,50.91,80,60,90,46.91,45.91,75.91,55][i],
-  oldPrice: [50.99,55.99,85,65,95,50.99,50.99,80.99,null][i],
-  rating: [3.5,4,5,2.5,3,3.5,4,4,4][i],
-  badge: ["SALE","BESTSELLER","HOT","SALE","HOT","SALE","BESTSELLER","HOT",null][i],
-  image: null,
-  category: ["men", "women", "kids", "accessories"][i % 4],
-  colors: ["Black","Blue","Gold"][i % 3],
-  tags: TAGS.slice(i % 4, (i % 4) + 2),
-}));
-
 const getPriceValue = (product) => Number(product.price ?? product.sale_price ?? 0);
 const getRatingValue = (product) => Number(product.rating ?? product.rating_average ?? 0);
 const getCreatedValue = (product) => {
@@ -283,7 +270,7 @@ export default function Products() {
 
   // Normalise API response — handles { products, total } or plain array
   const products = Array.isArray(data) ? data : (data?.products || data?.data || []);
-  const baseProducts = products.length ? products : MOCK_PRODUCTS;
+  const baseProducts = products;
 
   const filteredProducts = useMemo(() => {
     let list = [...baseProducts];
@@ -373,8 +360,9 @@ export default function Products() {
 
   // ── Recent posts (from same API) ──
   const { data: recentData } = useFetch("/api/products?limit=2&sort=newest");
-  const recentPosts = Array.isArray(recentData) ? recentData.slice(0,2)
-    : recentData?.products?.slice(0,2) || MOCK_PRODUCTS.slice(0,2);
+  const recentPosts = Array.isArray(recentData)
+    ? recentData.slice(0, 2)
+    : recentData?.products?.slice(0, 2) || [];
 
   return (
     <>

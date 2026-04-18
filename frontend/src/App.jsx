@@ -37,7 +37,7 @@ const FULL_WIDTH_PAGES = ["/", "/login", "/register", "/cart", "/checkout"];
 const FOOTER_HIDDEN_PAGES = ["/login", "/register"];
 
 function App() {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const isProductDetailPage = pathname.startsWith("/products/");
   const isFullWidth = FULL_WIDTH_PAGES.includes(pathname) || isProductDetailPage;
   const showFooter = !FOOTER_HIDDEN_PAGES.includes(pathname);
@@ -51,7 +51,7 @@ function App() {
 
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-  }, [pathname]);
+  }, [pathname, search]);
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--theme-bg)" }}>

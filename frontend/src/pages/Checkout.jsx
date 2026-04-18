@@ -192,7 +192,15 @@ function EmptyCheckout() {
 }
 
 export default function Checkout() {
-  const { cart, clearCart, clearPromo, promo, totals } = useCart();
+  const {
+    cart,
+    selectedCart,
+    selectedItemIds,
+    selectedTotals,
+    removeSelectedItemsFromCart,
+    clearPromo,
+    promo,
+  } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -216,9 +224,9 @@ export default function Checkout() {
     cvv: "",
   });
 
-  const shipping = totals.subtotal > FREE_SHIP_MIN ? 0 : totals.subtotal > 0 ? 10 : 0;
-  const discount = totals.discount || 0;
-  const total = Math.max(0, totals.subtotal - discount + shipping);
+  const shipping = selectedTotals.subtotal > FREE_SHIP_MIN ? 0 : selectedTotals.subtotal > 0 ? 10 : 0;
+  const discount = selectedTotals.discount || 0;
+  const total = Math.max(0, selectedTotals.subtotal - discount + shipping);
 
   const cardBrand = useMemo(() => inferCardBrand(payment.cardNumber), [payment.cardNumber]);
 
@@ -284,8 +292,8 @@ export default function Checkout() {
       const [expMonth = "", expYear = ""] = payment.expiry.split("/");
 
       const order = {
-        items: cart,
-        subtotal: totals.subtotal,
+        items: selectedCart,
+        subtotal: selectedTotals.subtotal,
         shipping,
         discount,
         promoCode: promo.code || "",
@@ -316,7 +324,7 @@ export default function Checkout() {
       };
 
       await api.post("/orders", order);
-      clearCart();
+      removeSelectedItemsFromCart(selectedItemIds);
       clearPromo();
       navigate("/order-success");
     } catch (error) {
@@ -332,6 +340,41 @@ export default function Checkout() {
         <Hero />
         <BreadcrumbBar />
         <EmptyCheckout />
+      </>
+    );
+  }
+
+  if (selectedCart.length === 0) {
+    return (
+      <>
+        <Hero />
+        <BreadcrumbBar />
+        <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 20px 60px", textAlign: "center" }}>
+          <h2 style={{ fontFamily: D, fontSize: 32, fontWeight: 600, color: "#1a1a1a", marginBottom: 10 }}>
+            No Cart Items Selected
+          </h2>
+          <p style={{ color: "#7a6d5d", fontSize: 14, lineHeight: 1.8, marginBottom: 24 }}>
+            Go back to your cart and choose the items you want to check out.
+          </p>
+          <Link
+            to="/cart"
+            style={{
+              display: "inline-block",
+              background: "#e8b14f",
+              color: "#fff",
+              padding: "13px 30px",
+              fontFamily: J,
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: 2,
+              textTransform: "uppercase",
+              textDecoration: "none",
+              borderRadius: 2,
+            }}
+          >
+            Back To Cart
+          </Link>
+        </div>
       </>
     );
   }
@@ -592,7 +635,7 @@ export default function Checkout() {
               </p>
 
               <div style={{ marginBottom: 20 }}>
-                {cart.map((item) => {
+                {selectedCart.map((item) => {
                   const pid = item._id || item.id;
                   const price = item.price ?? item.sale_price ?? 0;
                   return (
@@ -627,7 +670,7 @@ export default function Checkout() {
               <div className="checkout-summary-row">
                 <span style={{ fontSize: 13, color: "#999" }}>Subtotal</span>
                 <span style={{ fontFamily: J, fontSize: 14, fontWeight: 600, color: "#1a1a1a" }}>
-                  {formatCurrency(totals.subtotal)}
+                  {formatCurrency(selectedTotals.subtotal)}
                 </span>
               </div>
 
