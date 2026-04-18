@@ -277,7 +277,7 @@ export default function Products() {
     return q;
   }, [selectedCat, sortBy, priceRange, searchText, selectedColors, selectedTags, page]);
 
-  const { data, loading, error } = useFetch(`/products${buildQuery()}`);
+  const { data, loading, error } = useFetch(`/api/products${buildQuery()}`);
 
   // Normalise API response — handles { products, total } or plain array
   const products = Array.isArray(data) ? data : (data?.products || data?.data || []);
