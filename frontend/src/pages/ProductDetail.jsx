@@ -123,8 +123,8 @@ function RelatedCard({ product }) {
 
 export default function ProductDetail() {
   const { id } = useParams();
-  const { data: product, loading, error } = useFetch(`/products/${id}`);
-  const { data: related } = useFetch(`/products?limit=5`);
+  const { data: product, loading, error } = useFetch(`/api/products/${id}`);
+  const { data: related } = useFetch(`/api/products?limit=5`);
   const { addToCart } = useCart();
 
   const [qty,          setQty]          = useState(1);
