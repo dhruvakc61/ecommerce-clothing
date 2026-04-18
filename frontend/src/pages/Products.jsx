@@ -370,7 +370,7 @@ export default function Products() {
   const endItem   = Math.min(currentPage * PER_PAGE, total);
 
   // ── Recent posts (from same API) ──
-  const { data: recentData } = useFetch("/products?limit=2&sort=newest");
+  const { data: recentData } = useFetch("/api/products?limit=2&sort=newest");
   const recentPosts = Array.isArray(recentData) ? recentData.slice(0,2)
     : recentData?.products?.slice(0,2) || MOCK_PRODUCTS.slice(0,2);
 

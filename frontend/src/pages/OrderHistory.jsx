@@ -2,7 +2,7 @@ import AccountOrdersPanel from "../components/account/AccountOrdersPanel";
 import useFetch from "../hooks/useFetch";
 
 export default function OrderHistory() {
-  const { data: orders, loading, error } = useFetch("/orders/my");
+  const { data: orders, loading, error } = useFetch("/api/orders/my");
 
   return (
     <AccountOrdersPanel
