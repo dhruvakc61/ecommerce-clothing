@@ -442,7 +442,7 @@ export default function Products() {
                 onChange={e => setPriceInput([priceInput[0], Number(e.target.value)])}/>
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:12 }}>
                 <span style={{ fontSize:13, color:"#555" }}>
-                  Price: <strong>${priceInput[0]}</strong> — <strong>${priceInput[1]}</strong>
+                  Price: <strong>{formatCurrency(priceInput[0])}</strong> — <strong>{formatCurrency(priceInput[1])}</strong>
                 </span>
                 <button onClick={applyPriceFilter} style={{
                   background:"#1a1a1a", color:"#fff", border:"none",

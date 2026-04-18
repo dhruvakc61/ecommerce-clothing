@@ -1,6 +1,7 @@
 import useFetch from "../../hooks/useFetch";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import getOrderReference from "../../utils/orderReference";
+import formatCurrency from "../../utils/formatCurrency";
 
 export default function AdminOrders() {
   const { data: orders, loading } = useFetch("/admin/orders");
@@ -30,7 +31,7 @@ export default function AdminOrders() {
                 <tr key={o._id} className="border-t">
                   <td className="p-2">{getOrderReference(o)}</td>
                   <td className="p-2">{o.user?.name}</td>
-                  <td className="p-2">${o.total}</td>
+                  <td className="p-2">{formatCurrency(o.total || 0)}</td>
                   <td className="p-2">{o.items.length}</td>
                 </tr>
               ))}

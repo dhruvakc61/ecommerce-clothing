@@ -551,7 +551,7 @@ export default function Cart() {
           {/* ── Info strip ── */}
           <div className="cart-info-strip">
             {[
-              { icon:"🚚", title:"Free Shipping on Order Over $1000", desc:"Enjoy free delivery on all qualifying orders over $1,000 anywhere in the world." },
+              { icon:"🚚", title:`Free Shipping on Orders Over ${formatCurrency(1000)}`, desc:`Enjoy free delivery on all qualifying orders over ${formatCurrency(1000)} anywhere in the world.` },
               { icon:"🎁", title:"Unlimited Gifts on Every Order",     desc:"We include a complimentary gift with every order placed through our store." },
               { icon:"🔒", title:"100% Money Back Guarantee",          desc:"Not happy? Return your order within 30 days for a full, no-questions-asked refund." },
             ].map(c => (

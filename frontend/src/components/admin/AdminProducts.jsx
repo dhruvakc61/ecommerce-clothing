@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import api from "../../api/axios";
+import formatCurrency from "../../utils/formatCurrency";
 
 export default function AdminProducts() {
   const { data: products, loading, refetch } = useFetch("/api/products");
@@ -46,7 +47,7 @@ export default function AdminProducts() {
               {products.map((p) => (
                 <tr key={p._id} className="border-t">
                   <td className="p-2">{p.name}</td>
-                  <td className="p-2">${p.price}</td>
+                  <td className="p-2">{formatCurrency(p.price || 0)}</td>
                   <td className="p-2">{p.category}</td>
                   <td className="p-2 space-x-3">
                     <Link

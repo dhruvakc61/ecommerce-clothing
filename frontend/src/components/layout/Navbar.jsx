@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useCart from "../../hooks/useCart";
 import bayaLogo from "../../assets/baya_logo_transparent.png";
+import formatCurrency from "../../utils/formatCurrency";
 
 const SHOP_CATEGORIES = [
   { label: "Mens", to: "/products?category=men" },
@@ -760,7 +761,7 @@ export default function Navbar() {
                     <img src={item.image || item.thumbnail} alt={item.name} className="cart-item-img" />
                     <div className="cart-item-info">
                       <p className="cart-item-name">{item.name}</p>
-                      <p className="cart-item-price">${item.price?.toFixed(2)} USD</p>
+                      <p className="cart-item-price">{formatCurrency(item.price || 0)}</p>
                       {item.size && <p className="cart-item-qty">SIZE: {item.size}</p>}
                       <p className="cart-item-qty">QTY: {String(item.qty || 1).padStart(2, "0")}</p>
                     </div>
@@ -771,7 +772,7 @@ export default function Navbar() {
             <div className="cart-footer">
               <div className="cart-subtotal">
                 <span>SUBTOTAL:</span>
-                <span>${cartTotal.toFixed(2)} USD</span>
+                <span>{formatCurrency(cartTotal)}</span>
               </div>
               <Link to="/cart" className="cart-btn cart-btn-outline" onClick={() => setCartOpen(false)}>View Cart</Link>
               <Link to="/checkout" className="cart-btn cart-btn-filled" onClick={() => setCartOpen(false)}>Check Out</Link>

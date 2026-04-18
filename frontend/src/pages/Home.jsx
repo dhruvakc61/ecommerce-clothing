@@ -2,12 +2,13 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import useCart from "../hooks/useCart";
+import formatCurrency from "../utils/formatCurrency";
 
 /* ─── DATA ─── */
 const slides = [
   {
     tag: "The Latest Winter Products for 2025",
-    price: "$299.99",
+    price: 299.99,
     title: "Look Hot With\n2025 Style",
     sub: "Discover our newest collection of premium winter fashion crafted for the modern wardrobe.",
     img: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=1920&q=90",
@@ -15,7 +16,7 @@ const slides = [
   },
   {
     tag: "Summer Collection Is Here",
-    price: "$199.99",
+    price: 199.99,
     title: "Feel Fresh &\nStay Stylish",
     sub: "Explore our vibrant summer lineup featuring light fabrics and bold designs.",
     img: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1920&q=90",
@@ -23,7 +24,7 @@ const slides = [
   },
   {
     tag: "New Arrivals — Men's Edition",
-    price: "$249.99",
+    price: 249.99,
     title: "Dress Sharp\nEvery Day",
     sub: "Premium menswear designed for confidence, comfort and class.",
     img: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=1920&q=90",
@@ -77,11 +78,11 @@ function ProductCard({ product, onAddToCart }) {
           </Link>
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <span style={{ fontFamily: "var(--font-body)", fontSize: 14, fontWeight: 700, color: "var(--theme-accent)" }}>
-              ${product.price?.toFixed(2)}
+              {formatCurrency(product.price || 0)}
             </span>
             {product.oldPrice && (
               <span style={{ fontSize: 12, color: "#b8aa9a", textDecoration: "line-through" }}>
-                ${product.oldPrice?.toFixed(2)}
+                {formatCurrency(product.oldPrice)}
               </span>
             )}
           </div>
@@ -637,7 +638,7 @@ export default function Home() {
         THE LATEST WINTER PRODUCTS FOR 2025
       </p>
 
-      <p className="bw-hero-price">$299.99</p>
+      <p className="bw-hero-price">{formatCurrency(slides[slide].price)}</p>
 
       <h1 className="bw-hero-h1">
         Look Hot{"\n"}With{"\n"}2025 Style
@@ -661,7 +662,7 @@ export default function Home() {
           <div className="bw-wrap">
             <div className="bw-feat-grid">
               {[
-                { icon: "🚚", name: "Free Shipment Over $50", note: "On all qualifying orders" },
+              { icon: "🚚", name: `Free Shipment Over ${formatCurrency(50)}`, note: "On all qualifying orders" },
                 { icon: "💬", name: "24/7 Online Support", note: "We're always here for you" },
                 { icon: "🔒", name: "100% Secure Payment", note: "SSL encrypted checkout" },
                 { icon: "🌍", name: "World Wide Shipment", note: "Delivered to your door" },
@@ -745,7 +746,7 @@ BAYA Clothing — Woven with purpose, defined by simplicity.
   {[
     {
       title: "Free Shipping",
-      desc: "Shipping worldwide for orders over $99",
+      desc: `Shipping worldwide for orders over ${formatCurrency(99)}`,
       icon: <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--theme-accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>,
     },
     {

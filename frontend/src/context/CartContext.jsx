@@ -1,6 +1,6 @@
 // Placeholder for CartContext.jsx
 // Full implementation will be added later.
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AuthContext } from "./AuthContext";
 
 export const CartContext = createContext();
@@ -8,6 +8,7 @@ const LEGACY_CART_STORAGE_KEY = "cart_items";
 const LEGACY_CART_PROMO_STORAGE_KEY = "cart_promo";
 const LEGACY_CART_SELECTION_STORAGE_KEY = "cart_selection";
 const DEFAULT_PROMO = { code: "", discount: 0 };
+const CART_NOTICE_TIMEOUT_MS = 2600;
 
 function getCartStorageKey(ownerKey) {
   return `cart_items:${ownerKey}`;
@@ -158,12 +159,14 @@ function loadStoredSelection(ownerKey, cartItems) {
 export function CartProvider({ children }) {
   const { user, loading } = useContext(AuthContext);
   const ownerKey = getCartOwnerKey(user);
+  const toastTimerRef = useRef(null);
   const [cartState, setCartState] = useState({
     ownerKey,
     cart: [],
     promo: DEFAULT_PROMO,
     selectedItemIds: [],
   });
+  const [cartNotice, setCartNotice] = useState(null);
 
   const cart = cartState.ownerKey === ownerKey ? cartState.cart : [];
   const promo = cartState.ownerKey === ownerKey ? cartState.promo : DEFAULT_PROMO;
@@ -223,15 +226,29 @@ export function CartProvider({ children }) {
     }
   }, [cartState.cart, cartState.ownerKey, cartState.selectedItemIds, loading, ownerKey]);
 
+  useEffect(() => {
+    if (!cartNotice) return undefined;
+
+    if (typeof window === "undefined") return undefined;
+
+    clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = window.setTimeout(() => {
+      setCartNotice(null);
+    }, CART_NOTICE_TIMEOUT_MS);
+
+    return () => clearTimeout(toastTimerRef.current);
+  }, [cartNotice]);
+
   // Add a product or increase quantity if it already exists.
   const addToCart = (product, qty = 1, options = {}) => {
+    const nextItem = normalizeCartItem({
+      ...product,
+      ...options,
+      qty,
+    });
+
     setCartState((prev) => {
       const prevCart = prev.ownerKey === ownerKey ? prev.cart : [];
-      const nextItem = normalizeCartItem({
-        ...product,
-        ...options,
-        qty,
-      });
       const exists = prevCart.find((item) => item.cartItemId === nextItem.cartItemId);
       if (exists) {
         return {
@@ -251,6 +268,11 @@ export function CartProvider({ children }) {
         cart: [...prevCart, nextItem],
         selectedItemIds: [...prev.selectedItemIds, nextItem.cartItemId],
       };
+    });
+
+    setCartNotice({
+      type: "success",
+      message: `${nextItem.name || "Item"} added to cart successfully.`,
     });
   };
 
@@ -326,6 +348,7 @@ export function CartProvider({ children }) {
   };
 
   const selectedCart = cart.filter((item) => selectedItemIds.includes(item.cartItemId));
+  const dismissCartNotice = () => setCartNotice(null);
 
   const applyPromo = (code, discount) => {
     setCartState((prev) => ({
@@ -375,7 +398,9 @@ export function CartProvider({ children }) {
         cart,
         selectedCart,
         selectedItemIds,
+        cartNotice,
         addToCart,
+        dismissCartNotice,
         removeFromCart,
         removeSelectedItemsFromCart,
         updateQty,

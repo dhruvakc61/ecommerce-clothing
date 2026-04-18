@@ -3,6 +3,7 @@ import AdminSidebar from "../../components/admin/AdminSidebar";
 import useFetch from "../../hooks/useFetch";
 import api from "../../api/axios";
 import { useState } from "react";
+import formatCurrency from "../../utils/formatCurrency";
 
 export default function AdminProducts() {
   const { data: products, loading, error, refetch } = useFetch("/api/products");
@@ -55,7 +56,7 @@ export default function AdminProducts() {
               {products.map((product) => (
                 <tr key={product._id} className="border-t">
                   <td className="p-3">{product.name}</td>
-                  <td className="p-3">${product.price?.toFixed(2)}</td>
+                  <td className="p-3">{formatCurrency(product.price || 0)}</td>
                   <td className="p-3">{product.stock ?? 0}</td>
                   <td className="p-3 space-x-3">
                     <Link

@@ -1,8 +1,8 @@
 // Placeholder for formatCurrency.js
 // Full implementation will be added later.
 export default function formatCurrency(value) {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-GB", {
     style: "currency",
-    currency: "USD",
+    currency: "GBP",
   }).format(value);
 }

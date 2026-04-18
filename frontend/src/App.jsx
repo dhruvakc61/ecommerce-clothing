@@ -24,6 +24,7 @@ import AdminProducts from "./pages/admin/AdminProducts";
 import AdminProductEdit from "./pages/admin/AdminProductEdit";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminOrders from "./pages/admin/AdminOrders";
+import useCart from "./hooks/useCart";
 
 // Forces ProductDetail to fully remount when the product id changes
 // This ensures useFetch re-runs and loads the new product
@@ -35,6 +36,87 @@ function ProductDetailWithKey() {
 // Pages that should be full width (no container padding)
 const FULL_WIDTH_PAGES = ["/", "/login", "/register", "/cart", "/checkout"];
 const FOOTER_HIDDEN_PAGES = ["/login", "/register"];
+
+function CartToast() {
+  const { cartNotice, dismissCartNotice } = useCart();
+
+  if (!cartNotice) return null;
+
+  return (
+    <>
+      <style>{`
+        .app-cart-toast {
+          position: fixed;
+          right: 18px;
+          bottom: 18px;
+          z-index: 2500;
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          width: min(360px, calc(100vw - 32px));
+          padding: 14px 16px;
+          border-radius: 18px;
+          background: rgba(31, 24, 20, 0.96);
+          color: var(--theme-surface);
+          box-shadow: 0 18px 38px rgba(36, 28, 23, 0.22);
+          border: 1px solid rgba(216, 177, 138, 0.22);
+          backdrop-filter: blur(14px);
+        }
+        .app-cart-toast-mark {
+          width: 26px;
+          height: 26px;
+          border-radius: 999px;
+          flex-shrink: 0;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--theme-accent);
+          color: var(--theme-surface);
+          font-size: 13px;
+          font-weight: 700;
+        }
+        .app-cart-toast-copy {
+          min-width: 0;
+          flex: 1;
+        }
+        .app-cart-toast-title {
+          margin: 0 0 4px;
+          font-family: var(--font-display);
+          font-size: 1.35rem;
+          line-height: 1;
+          color: var(--theme-surface);
+        }
+        .app-cart-toast-text {
+          margin: 0;
+          font-size: 13px;
+          line-height: 1.6;
+          color: rgba(255, 247, 238, 0.8);
+        }
+        .app-cart-toast-close {
+          border: none;
+          background: transparent;
+          color: rgba(255, 247, 238, 0.72);
+          cursor: pointer;
+          font-size: 18px;
+          line-height: 1;
+          padding: 0;
+          flex-shrink: 0;
+        }
+      `}</style>
+
+      <div className="app-cart-toast" role="status" aria-live="polite">
+        <span className="app-cart-toast-mark">✓</span>
+        <div className="app-cart-toast-copy">
+          <p className="app-cart-toast-title">Added to Cart</p>
+          <p className="app-cart-toast-text">{cartNotice.message}</p>
+        </div>
+        <button type="button" className="app-cart-toast-close" onClick={dismissCartNotice} aria-label="Dismiss cart message">
+          ×
+        </button>
+      </div>
+    </>
+  );
+}
 
 function App() {
   const { pathname, search } = useLocation();
@@ -56,6 +138,7 @@ function App() {
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--theme-bg)" }}>
       <Navbar />
+      <CartToast />
 
       <main style={isFullWidth ? { flex: 1 } : constrainedMainStyle}>
         <Routes>
