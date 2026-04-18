@@ -32,17 +32,24 @@ const slides = [
   },
 ];
 
-const blogPosts = [
-  { id: 1, date: "10 January", title: "Top Winter Fashion Trends You Need to Know", excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec faucibus maximus vehicula tellus vel tristique.", img: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=80" },
-  { id: 2, date: "25 February", title: "How to Style Your Summer Wardrobe in 2025", excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec faucibus maximus vehicula tellus vel tristique.", img: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=600&q=80" },
-  { id: 3, date: "12 March", title: "Essential Accessories Every Man Should Own", excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec faucibus maximus vehicula tellus vel tristique.", img: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600&q=80" },
-];
-
 const testimonials = [
   { name: "Sarah Johnson", role: "Verified Buyer", text: "Absolutely love the quality of the clothes! The fabric feels premium and the stitching is perfect. Will definitely shop again and again." },
   { name: "Michael Chen", role: "Fashion Blogger", text: "BoShop has completely changed how I think about online fashion. Fast delivery, great packaging, and stunning designs every time." },
   { name: "Emily Davis", role: "Loyal Customer", text: "I've been shopping here for 2 years and every single order has been perfect. Customer service is truly outstanding!" },
 ];
+
+function formatKnowledgeDate(value) {
+  if (!value) return "Latest story";
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(parsed);
+}
 
 /* ─── PRODUCT CARD ─── */
 function ProductCard({ product, onAddToCart }) {
@@ -123,8 +130,14 @@ export default function Home() {
   const timerRef = useRef(null);
 
   const { data: products } = useFetch("/products");
+  const {
+    data: vogueFeed,
+    loading: vogueLoading,
+    error: vogueError,
+  } = useFetch("/content/vogue?limit=3");
   const { addToCart } = useCart();
   const display = Array.isArray(products) ? products.slice(0, 8) : [];
+  const vogueArticles = Array.isArray(vogueFeed?.articles) ? vogueFeed.articles : [];
 
   // Auto-advance slider
   useEffect(() => {
@@ -811,23 +824,47 @@ BAYA Clothing — Woven with purpose, defined by simplicity.
               <p className="bw-ey">Latest Updates</p>
               <h2 className="bw-h2">Knowledge Share</h2>
               <div className="bw-bar" />
-              <p className="bw-sub">Stay updated with the latest fashion trends and style tips.</p>
+              <p className="bw-sub">Fresh stories from British Vogue, with direct links to the original articles.</p>
             </div>
-            <div className="bw-blog-grid">
-              {blogPosts.map(p => (
-                <div key={p.id} className="bw-bc">
-                  <div className="bw-bc-iw">
-                    <img src={p.img} alt={p.title} className="bw-bc-img" />
-                  </div>
-                  <div className="bw-bc-body">
-                    <p className="bw-bc-meta"><b>{p.date}</b> · By Admin · 32 Comments</p>
-                    <h3 className="bw-bc-title"><Link to="/">{p.title}</Link></h3>
-                    <p className="bw-bc-ex">{p.excerpt}</p>
-                    <Link to="/" className="bw-rm">Read More →</Link>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {vogueLoading ? (
+              <div className="bw-empty-products">Loading latest British Vogue stories...</div>
+            ) : vogueError ? (
+              <div className="bw-empty-products">We could not load Vogue stories right now. Please try again shortly.</div>
+            ) : vogueArticles.length > 0 ? (
+              <div className="bw-blog-grid">
+                {vogueArticles.map((article, index) => (
+                  <article key={`${article.link}-${index}`} className="bw-bc">
+                    <a
+                      href={article.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="bw-bc-iw"
+                      aria-label={`Open British Vogue article: ${article.title}`}
+                    >
+                      <img src={article.image} alt={article.title} className="bw-bc-img" />
+                    </a>
+                    <div className="bw-bc-body">
+                      <p className="bw-bc-meta">
+                        <b>{formatKnowledgeDate(article.publishedAt)}</b>
+                        {article.author ? ` · By ${article.author}` : ""}
+                        {" · British Vogue"}
+                      </p>
+                      <h3 className="bw-bc-title">
+                        <a href={article.link} target="_blank" rel="noreferrer">
+                          {article.title}
+                        </a>
+                      </h3>
+                      <p className="bw-bc-ex">{article.description}</p>
+                      <a href={article.link} target="_blank" rel="noreferrer" className="bw-rm">
+                        Read On Vogue →
+                      </a>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <div className="bw-empty-products">No Vogue stories are available at the moment.</div>
+            )}
           </div>
         </div>
 
