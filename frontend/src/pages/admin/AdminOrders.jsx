@@ -1,5 +1,5 @@
 import { useState } from "react";
-import AdminSidebar from "../../components/admin/AdminSidebar";
+import AdminPageShell from "../../components/admin/AdminPageShell";
 import useFetch from "../../hooks/useFetch";
 import api from "../../api/axios";
 import formatCurrency from "../../utils/formatCurrency";
@@ -9,16 +9,45 @@ const statusOptions = ["Pending", "Processing", "Shipped", "Delivered"];
 
 function DetailRow({ label, value }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", gap: 16, padding: "8px 0", borderBottom: "1px solid #f1f1f1" }}>
-      <span style={{ fontSize: 12, color: "#777", fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.6 }}>{label}</span>
-      <span style={{ fontSize: 13, color: "#222", textAlign: "right" }}>{value || "N/A"}</span>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 6,
+        padding: "10px 0",
+        borderBottom: "1px solid #f1f1f1",
+      }}
+      className="sm:flex-row sm:items-center sm:justify-between"
+    >
+      <span style={{ fontSize: 12, color: "#777", fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.6 }}>
+        {label}
+      </span>
+      <span style={{ fontSize: 13, color: "#222", textAlign: "left", wordBreak: "break-word" }} className="sm:text-right">
+        {value || "N/A"}
+      </span>
     </div>
   );
+}
+
+function getStatusClasses(status) {
+  const normalized = String(status || "Pending").toLowerCase();
+
+  if (normalized === "delivered") return "bg-green-50 text-green-700";
+  if (normalized === "shipped") return "bg-sky-50 text-sky-700";
+  if (normalized === "processing") return "bg-amber-50 text-amber-700";
+  return "bg-stone-100 text-stone-700";
 }
 
 export default function AdminOrders() {
   const [openOrderId, setOpenOrderId] = useState(null);
   const { data: orders, loading, error, refetch } = useFetch("/api/orders");
+  const orderList = Array.isArray(orders) ? orders : [];
+  const totalRevenue = orderList.reduce((sum, order) => sum + Number(order.total || 0), 0);
+  const pendingCount = orderList.filter((order) => (order.status || "Pending") === "Pending").length;
+  const activeCount = orderList.filter((order) => {
+    const status = String(order.status || "Pending").toLowerCase();
+    return status !== "delivered";
+  }).length;
 
   const updateStatus = async (orderId, status) => {
     try {
@@ -30,42 +59,61 @@ export default function AdminOrders() {
   };
 
   return (
-    <div className="flex gap-6">
-      <AdminSidebar />
+    <AdminPageShell
+      eyebrow="Fulfilment"
+      title="Manage Orders"
+      description="Order details now expand cleanly on mobile, with stacked metadata, safer wrapping, and clearer status controls."
+    >
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div className="rounded-[22px] border border-[#eadfd2] bg-[#fffaf3] p-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-accent)]">Total Orders</p>
+          <p className="mt-3 text-3xl font-semibold text-[var(--theme-ink)]">{orderList.length}</p>
+        </div>
+        <div className="rounded-[22px] border border-[#eadfd2] bg-white p-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-accent)]">Pending Now</p>
+          <p className="mt-3 text-3xl font-semibold text-[var(--theme-ink)]">{pendingCount}</p>
+        </div>
+        <div className="rounded-[22px] border border-[#eadfd2] bg-white p-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-accent)]">Revenue</p>
+          <p className="mt-3 text-3xl font-semibold text-[var(--theme-ink)]">{formatCurrency(totalRevenue)}</p>
+        </div>
+      </div>
 
-      <div className="flex-1 bg-white p-6 rounded shadow">
-        <h1 className="text-2xl font-bold mb-6">Manage Orders</h1>
-        {loading && <p>Loading orders...</p>}
-        {error && <p className="text-red-600">{error}</p>}
-        {!loading && (!orders || orders.length === 0) && <p>No orders found.</p>}
+      <div className="mt-6">
+        {loading && <p className="text-sm text-[var(--theme-muted)]">Loading orders...</p>}
+        {error && <p className="text-sm text-red-600">{error}</p>}
+        {!loading && orderList.length === 0 && <p className="text-sm text-[var(--theme-muted)]">No orders found.</p>}
 
-        {orders && orders.length > 0 && (
+        {orderList.length > 0 && (
           <div className="space-y-6">
-            {orders.map((order) => (
-              <div key={order._id} className="border rounded-xl overflow-hidden bg-white shadow-sm">
-                <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-5 bg-gray-50 border-b">
+            {orderList.map((order) => (
+              <div key={order._id} className="overflow-hidden rounded-[26px] border border-[#eadfd2] bg-white shadow-[0_16px_40px_rgba(36,28,23,0.05)]">
+                <div className="flex flex-col gap-5 border-b border-[#f1e7dc] bg-[#fbf5ee] px-5 py-5 sm:px-6 lg:flex-row lg:items-start lg:justify-between">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-gray-500 mb-2">Order</p>
-                    <h2 className="text-lg font-semibold text-gray-900">{getOrderReference(order)}</h2>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[var(--theme-accent)]">Order</p>
+                    <h2 className="text-lg font-semibold text-[var(--theme-ink)]">{getOrderReference(order)}</h2>
+                    <p className="mt-1 text-sm text-[var(--theme-muted)]">
                       {order.createdAt ? new Date(order.createdAt).toLocaleString() : "No date available"}
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-4">
-                    <div className="text-right">
-                      <p className="text-xs uppercase tracking-[0.2em] text-gray-500 mb-2">Customer</p>
-                      <p className="text-sm font-medium text-gray-900">{order.shippingAddress?.fullName || order.user?.name || "N/A"}</p>
-                      <p className="text-sm text-gray-500">{order.shippingAddress?.email || order.user?.email || "N/A"}</p>
+                  <div className="grid gap-4 sm:grid-cols-2 xl:flex xl:items-center">
+                    <div className="xl:text-right">
+                      <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[var(--theme-accent)]">Customer</p>
+                      <p className="text-sm font-medium text-[var(--theme-ink)]">{order.shippingAddress?.fullName || order.user?.name || "N/A"}</p>
+                      <p className="break-all text-sm text-[var(--theme-muted)]">{order.shippingAddress?.email || order.user?.email || "N/A"}</p>
                     </div>
 
-                    <div className="text-right">
-                      <p className="text-xs uppercase tracking-[0.2em] text-gray-500 mb-2">Total</p>
-                      <p className="text-lg font-semibold text-gray-900">{formatCurrency(order.total || 0)}</p>
+                    <div className="xl:text-right">
+                      <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[var(--theme-accent)]">Total</p>
+                      <p className="text-lg font-semibold text-[var(--theme-ink)]">{formatCurrency(order.total || 0)}</p>
+                      <p className="mt-1 text-xs uppercase tracking-[0.16em] text-[var(--theme-muted)]">
+                        {activeCount} active in fulfilment
+                      </p>
                     </div>
 
                     <select
-                      className="border px-3 py-2 rounded-md bg-white"
+                      className="rounded-full border border-[#e7dacc] bg-white px-4 py-2 text-sm text-[var(--theme-ink)]"
                       value={order.status || "Pending"}
                       onChange={(e) => updateStatus(order._id, e.target.value)}
                     >
@@ -79,7 +127,7 @@ export default function AdminOrders() {
                     <button
                       type="button"
                       onClick={() => setOpenOrderId((prev) => (prev === order._id ? null : order._id))}
-                      className="border px-4 py-2 rounded-md bg-white text-sm font-medium text-gray-800"
+                      className="rounded-full border border-[#d8b18a] bg-white px-4 py-2 text-sm font-medium text-[var(--theme-accent)]"
                     >
                       {openOrderId === order._id ? "Hide Details" : "View Details"}
                     </button>
@@ -87,18 +135,18 @@ export default function AdminOrders() {
                 </div>
 
                 {openOrderId === order._id && (
-                  <div className="grid gap-6 p-6 lg:grid-cols-[1.2fr_0.8fr]">
+                  <div className="grid gap-6 p-5 sm:p-6 lg:grid-cols-[1.2fr_0.8fr]">
                     <div>
-                      <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-gray-700 mb-4">Products</h3>
+                      <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--theme-accent)]">Products</h3>
                       <div className="space-y-4">
                         {(order.items || []).map((item, index) => {
                           const productId = item._id || item.id || "N/A";
                           const unitPrice = Number(item.price || 0);
                           const qty = Number(item.qty || 0);
                           return (
-                            <div key={`${order._id}-${productId}-${index}`} className="border rounded-lg p-4 bg-gray-50">
-                              <div className="flex items-start gap-4">
-                                <div className="w-20 h-20 rounded-lg overflow-hidden bg-white border flex items-center justify-center flex-shrink-0">
+                            <div key={`${order._id}-${productId}-${index}`} className="rounded-[22px] border border-[#efe4d8] bg-[#fffdf9] p-4">
+                              <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                                <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-white">
                                   {item.image ? (
                                     <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                   ) : (
@@ -107,8 +155,8 @@ export default function AdminOrders() {
                                 </div>
 
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-base font-semibold text-gray-900 mb-2">{item.name || "Unnamed Product"}</p>
-                                  <div className="grid gap-x-6 gap-y-2 sm:grid-cols-2">
+                                  <p className="mb-2 text-base font-semibold text-[var(--theme-ink)]">{item.name || "Unnamed Product"}</p>
+                                  <div className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
                                     <DetailRow label="Product ID" value={productId} />
                                     <DetailRow label="Category" value={item.category} />
                                     <DetailRow label="Size" value={item.size} />
@@ -126,8 +174,8 @@ export default function AdminOrders() {
                     </div>
 
                     <div className="space-y-6">
-                      <div className="border rounded-lg p-4">
-                        <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-gray-700 mb-4">Checkout Details</h3>
+                      <div className="rounded-[22px] border border-[#efe4d8] p-4">
+                        <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--theme-accent)]">Checkout Details</h3>
                         <DetailRow label="Full Name" value={order.shippingAddress?.fullName} />
                         <DetailRow label="Email" value={order.shippingAddress?.email || order.user?.email} />
                         <DetailRow label="Phone" value={order.shippingAddress?.phone} />
@@ -140,8 +188,13 @@ export default function AdminOrders() {
                         <DetailRow label="Order Notes" value={order.shippingAddress?.notes} />
                       </div>
 
-                      <div className="border rounded-lg p-4">
-                        <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-gray-700 mb-4">Pricing</h3>
+                      <div className="rounded-[22px] border border-[#efe4d8] p-4">
+                        <div className="mb-4 flex items-center justify-between gap-3">
+                          <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--theme-accent)]">Pricing</h3>
+                          <span className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${getStatusClasses(order.status)}`}>
+                            {order.status || "Pending"}
+                          </span>
+                        </div>
                         <DetailRow label="Subtotal" value={formatCurrency(order.subtotal || 0)} />
                         <DetailRow label="Shipping" value={formatCurrency(order.shipping || 0)} />
                         <DetailRow label="Promo Code" value={order.promoCode} />
@@ -160,6 +213,6 @@ export default function AdminOrders() {
           </div>
         )}
       </div>
-    </div>
+    </AdminPageShell>
   );
 }

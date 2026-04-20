@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import AdminSidebar from "../../components/admin/AdminSidebar";
+import AdminPageShell from "../../components/admin/AdminPageShell";
 import useFetch from "../../hooks/useFetch";
 import api from "../../api/axios";
 
@@ -72,54 +72,62 @@ export default function AdminProductEdit() {
   };
 
   return (
-    <div className="flex gap-6">
-      <AdminSidebar />
-      <div className="flex-1 bg-white p-6 rounded shadow">
-        <h1 className="text-2xl font-bold mb-6">
-          {isNew ? "Add Product" : "Edit Product"}
-        </h1>
+    <AdminPageShell
+      eyebrow={isNew ? "Create" : "Update"}
+      title={isNew ? "Add Product" : "Edit Product"}
+      description="The editor now uses the same responsive admin shell, so creating or updating inventory stays comfortable on smaller screens too."
+      actions={
+        <button
+          type="button"
+          onClick={() => navigate("/admin/products")}
+          className="inline-flex items-center justify-center rounded-full border border-[#d8b18a] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--theme-accent)]"
+        >
+          Back to Products
+        </button>
+      }
+    >
+      <div className="rounded-[26px] border border-[#eadfd2] bg-[#fffdf9] p-5 shadow-[0_16px_38px_rgba(36,28,23,0.04)] sm:p-6">
+        {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
-        {error && <p className="text-red-600 mb-4">{error}</p>}
-
-        <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <form onSubmit={handleSave} className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div>
-            <label className="block text-sm font-semibold mb-2">Product Name</label>
+            <label className="mb-2 block text-sm font-semibold">Product Name</label>
             <input
               type="text"
               value={form.name}
               onChange={(e) => updateField("name", e.target.value)}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full rounded-2xl border border-[#e7dacc] bg-white px-4 py-3"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Price</label>
+            <label className="mb-2 block text-sm font-semibold">Price</label>
             <input
               type="number"
               min="0"
               step="0.01"
               value={form.price}
               onChange={(e) => updateField("price", e.target.value)}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full rounded-2xl border border-[#e7dacc] bg-white px-4 py-3"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Image URL</label>
+            <label className="mb-2 block text-sm font-semibold">Image URL</label>
             <input
               type="text"
               value={form.image}
               onChange={(e) => updateField("image", e.target.value)}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full rounded-2xl border border-[#e7dacc] bg-white px-4 py-3"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Category</label>
+            <label className="mb-2 block text-sm font-semibold">Category</label>
             <select
               value={form.category}
               onChange={(e) => updateField("category", e.target.value)}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full rounded-2xl border border-[#e7dacc] bg-white px-4 py-3"
             >
               <option value="men">Men</option>
               <option value="women">Women</option>
@@ -129,44 +137,44 @@ export default function AdminProductEdit() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Stock</label>
+            <label className="mb-2 block text-sm font-semibold">Stock</label>
             <input
               type="number"
               min="0"
               value={form.stock}
               onChange={(e) => updateField("stock", e.target.value)}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full rounded-2xl border border-[#e7dacc] bg-white px-4 py-3"
             />
           </div>
 
           <div className="lg:col-span-2">
-            <label className="block text-sm font-semibold mb-2">Description</label>
+            <label className="mb-2 block text-sm font-semibold">Description</label>
             <textarea
               rows="4"
               value={form.description}
               onChange={(e) => updateField("description", e.target.value)}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full rounded-2xl border border-[#e7dacc] bg-white px-4 py-3"
             />
           </div>
 
-          <div className="lg:col-span-2 flex gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row lg:col-span-2">
             <button
               type="submit"
               disabled={saving}
-              className="bg-blue-600 text-white px-6 py-3 rounded"
+              className="rounded-full bg-[var(--theme-accent)] px-6 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-white shadow-[0_12px_24px_rgba(176,122,79,0.2)]"
             >
               {saving ? "Saving..." : "Save Product"}
             </button>
             <button
               type="button"
               onClick={() => navigate("/admin/products")}
-              className="border px-6 py-3 rounded"
+              className="rounded-full border border-[#d8b18a] px-6 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--theme-accent)]"
             >
               Cancel
             </button>
           </div>
         </form>
       </div>
-    </div>
+    </AdminPageShell>
   );
 }

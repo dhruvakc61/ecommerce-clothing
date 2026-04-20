@@ -121,8 +121,9 @@ function CartToast() {
 function App() {
   const { pathname, search } = useLocation();
   const isProductDetailPage = pathname.startsWith("/products/");
-  const isFullWidth = FULL_WIDTH_PAGES.includes(pathname) || isProductDetailPage;
-  const showFooter = !FOOTER_HIDDEN_PAGES.includes(pathname);
+  const isAdminPage = pathname.startsWith("/admin");
+  const isFullWidth = FULL_WIDTH_PAGES.includes(pathname) || isProductDetailPage || isAdminPage;
+  const showFooter = !FOOTER_HIDDEN_PAGES.includes(pathname) && !isAdminPage;
   const constrainedMainStyle = {
     flex: 1,
     maxWidth: "1280px",
