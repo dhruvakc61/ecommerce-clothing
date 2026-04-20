@@ -143,7 +143,7 @@ function loadStoredSelection(ownerKey, cartItems) {
 
   if (hasScopedSelection) {
     const storedSelection = parseStoredSelection(scopedKey);
-    return storedSelection.length > 0 ? storedSelection : fallbackSelection;
+    return storedSelection;
   }
 
   const legacySelection = parseStoredSelection(LEGACY_CART_SELECTION_STORAGE_KEY);
@@ -160,6 +160,7 @@ export function CartProvider({ children }) {
   const { user, loading } = useContext(AuthContext);
   const ownerKey = getCartOwnerKey(user);
   const toastTimerRef = useRef(null);
+  const previousCartIdsRef = useRef([]);
   const [cartState, setCartState] = useState({
     ownerKey,
     cart: [],
@@ -176,6 +177,7 @@ export function CartProvider({ children }) {
     if (loading) return;
 
     const nextCart = loadStoredCart(ownerKey);
+    previousCartIdsRef.current = nextCart.map((item) => item.cartItemId);
     setCartState({
       ownerKey,
       cart: nextCart,
@@ -210,10 +212,14 @@ export function CartProvider({ children }) {
 
     const validIds = new Set(cartState.cart.map((item) => item.cartItemId));
     const currentSelection = cartState.selectedItemIds.filter((id) => validIds.has(id));
+    const previousIds = previousCartIdsRef.current;
+    const previousIdSet = new Set(previousIds);
     const newIds = cartState.cart
       .map((item) => item.cartItemId)
-      .filter((id) => !currentSelection.includes(id));
+      .filter((id) => !previousIdSet.has(id) && !currentSelection.includes(id));
     const nextSelection = [...currentSelection, ...newIds];
+
+    previousCartIdsRef.current = cartState.cart.map((item) => item.cartItemId);
 
     if (
       nextSelection.length !== cartState.selectedItemIds.length ||

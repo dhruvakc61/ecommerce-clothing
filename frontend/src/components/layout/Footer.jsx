@@ -16,7 +16,7 @@ const LINK_COLUMNS = [
       { label: "Login", to: "/login" },
       { label: "Register", to: "/register" },
       { label: "My Profile", to: "/profile" },
-      { label: "About Us", to: "/about" },
+      { label: "About Us", to: "/#our-story" },
     ],
   },
   {

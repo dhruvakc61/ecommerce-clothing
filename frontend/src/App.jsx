@@ -1,5 +1,5 @@
 import { useLayoutEffect } from "react";
-import { Routes, Route, useLocation, useParams } from "react-router-dom";
+import { Routes, Route, useLocation, useParams, Navigate } from "react-router-dom";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 
@@ -13,7 +13,6 @@ import OrderHistory from "./pages/OrderHistory";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
-import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -119,7 +118,7 @@ function CartToast() {
 }
 
 function App() {
-  const { pathname, search } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const isProductDetailPage = pathname.startsWith("/products/");
   const isAdminPage = pathname.startsWith("/admin");
   const isFullWidth = FULL_WIDTH_PAGES.includes(pathname) || isProductDetailPage || isAdminPage;
@@ -133,8 +132,16 @@ function App() {
   };
 
   useLayoutEffect(() => {
+    if (hash) {
+      const target = document.getElementById(hash.replace(/^#/, ""));
+      if (target) {
+        target.scrollIntoView({ block: "start", behavior: "auto" });
+        return;
+      }
+    }
+
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-  }, [pathname, search]);
+  }, [pathname, search, hash]);
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--theme-bg)" }}>
@@ -152,7 +159,7 @@ function App() {
           <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/about" element={<Navigate to="/#our-story" replace />} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />

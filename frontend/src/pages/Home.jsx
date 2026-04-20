@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import useCart from "../hooks/useCart";
 import formatCurrency from "../utils/formatCurrency";
@@ -54,10 +54,29 @@ function formatKnowledgeDate(value) {
 /* ─── PRODUCT CARD ─── */
 function ProductCard({ product, onAddToCart }) {
   const [hov, setHov] = useState(false);
+  const navigate = useNavigate();
   const cardRadius = 16;
   const pillRadius = 999;
+  const productUrl = `/products/${product._id}`;
+
+  const openProduct = () => {
+    navigate(productUrl);
+  };
+
   return (
-    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+    <div
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      onClick={openProduct}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openProduct();
+        }
+      }}
+      role="link"
+      tabIndex={0}
+      aria-label={`View details for ${product.name}`}
       style={{ background: "transparent", cursor: "pointer", borderRadius: cardRadius, overflow: "visible", boxShadow: hov ? "0 24px 40px rgba(36, 28, 23, 0.12)" : "0 12px 26px rgba(36, 28, 23, 0.07)", transition: "box-shadow 0.3s ease, transform 0.3s ease", transform: hov ? "translateY(-4px)" : "translateY(0)" }}>
       <div style={{ position: "relative", overflow: "hidden", paddingBottom: "125%", background: "var(--theme-panel)", borderRadius: cardRadius }}>
         <img src={product.image || product.img} alt={product.name}
@@ -76,7 +95,11 @@ function ProductCard({ product, onAddToCart }) {
           padding: "13px 14px 14px", boxShadow: "0 14px 32px rgba(36, 28, 23, 0.12)",
           backdropFilter: "blur(8px)", transition: "transform 0.28s ease, opacity 0.28s ease",
           transform: hov ? "translateY(110%)" : "translateY(0)", opacity: hov ? 0 : 1 }}>
-          <Link to={`/products/${product._id}`} style={{ textDecoration: "none" }}>
+          <Link
+            to={productUrl}
+            onClick={(event) => event.stopPropagation()}
+            style={{ textDecoration: "none" }}
+          >
             <p style={{ fontFamily: "var(--font-display)", fontSize: 13, fontWeight: 600,
               color: "var(--theme-ink)", marginBottom: 5, letterSpacing: 0.4, lineHeight: 1.3,
               overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -99,14 +122,19 @@ function ProductCard({ product, onAddToCart }) {
           display: "flex", gap: 6, justifyContent: "center",
           transform: hov ? "translateY(0)" : "translateY(101%)",
           transition: "transform 0.32s ease", zIndex: 3 }}>
-          <button onClick={() => onAddToCart(product)}
+          <button
+            onClick={(event) => {
+              event.stopPropagation();
+              onAddToCart(product);
+            }}
             style={{ flex: 1, background: "var(--theme-accent)", color: "var(--theme-surface)", border: "none",
               padding: "9px 6px", fontSize: 10, fontFamily: "var(--font-body)",
               fontWeight: 700, letterSpacing: 1.4, textTransform: "uppercase", cursor: "pointer",
               borderRadius: pillRadius }}>
             Add To Cart
           </button>
-          <Link to={`/products/${product._id}`}
+          <Link to={productUrl}
+            onClick={(event) => event.stopPropagation()}
             style={{ background: "var(--theme-dark-soft)", color: "var(--theme-surface)",
               border: "1px solid var(--theme-dark-soft)", padding: "9px 12px",
               fontSize: 10, fontFamily: "var(--font-body)", fontWeight: 700,
@@ -648,10 +676,10 @@ export default function Home() {
     {/* content */}
     <div className="bw-hero-body">
       <p className="bw-hero-eyebrow">
-        THE LATEST WINTER PRODUCTS FOR 2025
+       
       </p>
 
-      <p className="bw-hero-price">{formatCurrency(slides[slide].price)}</p>
+   
 
       <h1 className="bw-hero-h1">
         Look Hot{"\n"}With{"\n"}2025 Style
@@ -723,7 +751,7 @@ export default function Home() {
         </div>
 
         {/* ══ ABOUT ══ */}
-        <div className="bw-section bw-section-alt">
+        <div id="our-story" className="bw-section bw-section-alt" style={{ scrollMarginTop: "110px" }}>
           <div className="bw-wrap">
             <div className="bw-about-grid">
               <img src="images/c68937db-af5f-40a9-8a34-5162494f291c.png" />
@@ -876,7 +904,7 @@ BAYA Clothing — Woven with purpose, defined by simplicity.
             <div className="bw-bar" />
             <p className="bw-testi-q">"{testimonials[testiIdx].text}"</p>
             <p className="bw-testi-n">{testimonials[testiIdx].name}</p>
-            <p className="bw-testi-r">{testimonials[testiIdx].role}</p>
+           
             <div style={{ display: "flex", justifyContent: "center", gap: 9, marginTop: 24 }}>
               {testimonials.map((_, i) => (
                 <button key={i} onClick={() => setTestiIdx(i)}

@@ -646,8 +646,8 @@ export default function Navbar() {
                 ))}
               </div>
             </li>
-            <li className="nav-item"><Link to="/">Collection</Link></li>
-            <li className="nav-item"><Link to="/about">About</Link></li>
+            
+            <li className="nav-item"><Link to="/#our-story">About</Link></li>
             <li className="nav-item"><Link to="/">Contact</Link></li>
           </ul>
 
@@ -715,7 +715,7 @@ export default function Navbar() {
                 {category.label}
               </Link>
             ))}
-            <Link to="/about" onClick={() => setMenuOpen(false)}>About</Link>
+            <Link to="/#our-story" onClick={() => setMenuOpen(false)}>About</Link>
             <Link to="/cart" onClick={() => setMenuOpen(false)}>Cart ({itemCount})</Link>
             {user ? (
               <>
