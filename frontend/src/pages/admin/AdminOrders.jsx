@@ -136,7 +136,7 @@ export default function AdminOrders() {
 
                 {openOrderId === order._id && (
                   <div className="grid gap-6 p-5 sm:p-6 lg:grid-cols-[1.2fr_0.8fr]">
-                    <div>
+                    <div className="space-y-6">
                       <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--theme-accent)]">Products</h3>
                       <div className="space-y-4">
                         {(order.items || []).map((item, index) => {
@@ -171,22 +171,6 @@ export default function AdminOrders() {
                           );
                         })}
                       </div>
-                    </div>
-
-                    <div className="space-y-6">
-                      <div className="rounded-[22px] border border-[#efe4d8] p-4">
-                        <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--theme-accent)]">Checkout Details</h3>
-                        <DetailRow label="Full Name" value={order.shippingAddress?.fullName} />
-                        <DetailRow label="Email" value={order.shippingAddress?.email || order.user?.email} />
-                        <DetailRow label="Phone" value={order.shippingAddress?.phone} />
-                        <DetailRow label="Address" value={order.shippingAddress?.address} />
-                        <DetailRow label="Apartment" value={order.shippingAddress?.apartment} />
-                        <DetailRow label="City" value={order.shippingAddress?.city} />
-                        <DetailRow label="State" value={order.shippingAddress?.state} />
-                        <DetailRow label="Postal Code" value={order.shippingAddress?.postalCode} />
-                        <DetailRow label="Country" value={order.shippingAddress?.country} />
-                        <DetailRow label="Order Notes" value={order.shippingAddress?.notes} />
-                      </div>
 
                       <div className="rounded-[22px] border border-[#efe4d8] p-4">
                         <div className="mb-4 flex items-center justify-between gap-3">
@@ -204,6 +188,22 @@ export default function AdminOrders() {
                         <DetailRow label="Card Brand" value={order.payment?.brand} />
                         <DetailRow label="Card Last 4" value={order.payment?.last4} />
                         <DetailRow label="Grand Total" value={formatCurrency(order.total || 0)} />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="rounded-[22px] border border-[#efe4d8] p-4">
+                        <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--theme-accent)]">Checkout Details</h3>
+                        <DetailRow label="Full Name" value={order.shippingAddress?.fullName} />
+                        <DetailRow label="Email" value={order.shippingAddress?.email || order.user?.email} />
+                        <DetailRow label="Phone" value={order.shippingAddress?.phone} />
+                        <DetailRow label="Address" value={order.shippingAddress?.address} />
+                        <DetailRow label="Apartment" value={order.shippingAddress?.apartment} />
+                        <DetailRow label="City" value={order.shippingAddress?.city} />
+                        <DetailRow label="State" value={order.shippingAddress?.state} />
+                        <DetailRow label="Postal Code" value={order.shippingAddress?.postalCode} />
+                        <DetailRow label="Country" value={order.shippingAddress?.country} />
+                        <DetailRow label="Order Notes" value={order.shippingAddress?.notes} />
                       </div>
                     </div>
                   </div>
