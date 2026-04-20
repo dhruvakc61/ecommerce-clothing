@@ -109,7 +109,7 @@ function ProductCard({ product, viewMode }) {
         </Link>
         <div style={{ flex:1, padding:"18px 18px 18px 0", display:"flex", flexDirection:"column", justifyContent:"center", gap:8 }}>
           <Link to={`/products/${pid}`} style={{ textDecoration:"none" }}>
-            <p style={{ fontFamily:DISPLAY_FONT, fontSize:20, fontWeight:600, color:"#1a1a1a", margin:0, lineHeight:1 }}>{product.name}</p>
+            <p style={{ fontFamily:DISPLAY_FONT, fontSize:17, fontWeight:600, color:"#1a1a1a", margin:0, lineHeight:1 }}>{product.name}</p>
           </Link>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <span style={{ fontFamily:DISPLAY_FONT, fontSize:24, fontWeight:600, color:"#e8b14f", lineHeight:1 }}>
@@ -198,7 +198,7 @@ function ProductCard({ product, viewMode }) {
 
       <div style={{ padding:"14px 14px 16px" }}>
         <Link to={`/products/${pid}`} style={{ textDecoration:"none" }}>
-          <p style={{ fontFamily:DISPLAY_FONT, fontSize:18, fontWeight:600,
+          <p style={{ fontFamily:DISPLAY_FONT, fontSize:15, fontWeight:600,
             color:"#1a1a1a", margin:"0 0 6px", letterSpacing:.3, lineHeight:1.3,
             whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
             {product.name}
