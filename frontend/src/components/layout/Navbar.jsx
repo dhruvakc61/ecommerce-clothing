@@ -412,28 +412,55 @@ export default function Navbar() {
         }
         .cart-sidebar {
           position: fixed;
-          top: 0;
-          right: 0;
-          width: 340px;
-          height: 100vh;
-          background: var(--theme-surface);
+          top: calc(var(--nav-height) + 18px);
+          right: 24px;
+          width: min(390px, calc(100vw - 32px));
+          height: min(50vh, 460px);
+          background:
+            linear-gradient(180deg, rgba(255, 253, 249, 0.98) 0%, rgba(246, 241, 234, 0.95) 100%);
           z-index: 2001;
           display: flex;
           flex-direction: column;
-          box-shadow: -12px 0 30px rgba(36, 28, 23, 0.18);
+          border-radius: 28px;
+          border: 1px solid rgba(228, 215, 200, 0.8);
+          box-shadow: 0 24px 60px rgba(36, 28, 23, 0.18);
+          overflow: hidden;
+          backdrop-filter: blur(18px);
         }
         .cart-sidebar-header {
           background: linear-gradient(135deg, var(--theme-dark) 0%, var(--theme-dark-soft) 100%);
           color: var(--theme-surface);
-          padding: 18px 20px;
+          padding: 18px 20px 16px;
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: flex-start;
+          gap: 12px;
+        }
+        .cart-header-copy {
+          min-width: 0;
+        }
+        .cart-header-label {
+          display: block;
           font-family: var(--font-body);
-          font-size: 14px;
-          letter-spacing: 0.14em;
-          font-weight: 600;
+          font-size: 11px;
+          letter-spacing: 0.16em;
+          font-weight: 700;
           text-transform: uppercase;
+          color: rgba(255, 247, 238, 0.68);
+          margin-bottom: 6px;
+        }
+        .cart-header-title {
+          display: block;
+          font-family: var(--font-display);
+          font-size: 2rem;
+          line-height: 0.95;
+          color: var(--theme-surface);
+        }
+        .cart-header-meta {
+          margin-top: 8px;
+          font-size: 12px;
+          color: rgba(255, 247, 238, 0.72);
+          letter-spacing: 0.04em;
         }
         .cart-close-btn {
           background: none;
@@ -441,60 +468,113 @@ export default function Navbar() {
           color: #fff;
           font-size: 20px;
           cursor: pointer;
+          width: 34px;
+          height: 34px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 999px;
+          background: rgba(255, 253, 249, 0.08);
+          transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .cart-close-btn:hover {
+          background: rgba(255, 253, 249, 0.16);
+          transform: rotate(90deg);
         }
         .cart-items-list {
           flex: 1;
           overflow-y: auto;
-          padding: 16px;
+          padding: 10px 18px 0;
+        }
+        .cart-items-list::-webkit-scrollbar {
+          width: 8px;
+        }
+        .cart-items-list::-webkit-scrollbar-thumb {
+          background: rgba(176, 122, 79, 0.18);
+          border-radius: 999px;
+        }
+        .cart-empty {
+          min-height: 180px;
+          display: grid;
+          place-items: center;
+          text-align: center;
+          padding: 12px;
+          color: var(--theme-muted);
+          font-size: 14px;
+          line-height: 1.8;
         }
         .cart-item-row {
           display: flex;
           gap: 12px;
           padding: 12px 0;
-          border-bottom: 1px solid var(--theme-border);
+          border-bottom: 1px solid rgba(228, 215, 200, 0.8);
           align-items: flex-start;
         }
         .cart-item-img {
-          width: 70px;
-          height: 80px;
+          width: 64px;
+          height: 72px;
           object-fit: cover;
           flex-shrink: 0;
+          border-radius: 16px;
+          background: var(--theme-surface-soft);
         }
         .cart-item-info { flex: 1; }
         .cart-item-name {
           font-size: 13px;
           font-weight: 600;
           color: var(--theme-ink);
+          margin-bottom: 5px;
+          line-height: 1.45;
+        }
+        .cart-item-name strong {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        .cart-item-price {
+          font-size: 13px;
+          color: var(--theme-accent);
+          font-weight: 700;
           margin-bottom: 4px;
         }
-        .cart-item-price { font-size: 13px; color: var(--theme-accent); font-weight: 600; }
-        .cart-item-qty { font-size: 12px; color: var(--theme-muted); }
+        .cart-item-qty {
+          font-size: 11px;
+          color: var(--theme-muted);
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+        }
         .cart-footer {
-          padding: 16px;
-          border-top: 1px solid var(--theme-border);
+          padding: 16px 18px 18px;
+          border-top: 1px solid rgba(228, 215, 200, 0.8);
+          background: rgba(255, 253, 249, 0.92);
+          backdrop-filter: blur(12px);
         }
         .cart-subtotal {
           display: flex;
           justify-content: space-between;
           font-weight: 700;
           font-size: 15px;
-          margin-bottom: 16px;
+          margin-bottom: 14px;
           color: var(--theme-ink);
           font-family: var(--font-body);
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
         }
         .cart-btn {
           display: block;
           width: 100%;
-          padding: 12px;
+          padding: 11px 14px;
           text-align: center;
           font-family: var(--font-body);
-          font-size: 13px;
+          font-size: 12px;
           letter-spacing: 0.16em;
           font-weight: 600;
           text-transform: uppercase;
           margin-bottom: 8px;
           cursor: pointer;
           border: none;
+          border-radius: 999px;
         }
         .cart-btn-outline {
           background: transparent;
@@ -565,7 +645,14 @@ export default function Navbar() {
           .nav-links { display: none; }
           .hamburger { display: flex; }
           .mobile-menu { display: flex; }
-          .cart-sidebar { width: min(100%, 360px); max-width: none; }
+          .cart-sidebar {
+            top: calc(var(--nav-height) + 12px);
+            right: 12px;
+            left: 12px;
+            width: auto;
+            height: min(50vh, 430px);
+            max-width: none;
+          }
           .main-nav-inner { height: 76px; }
           .logo img { width: clamp(138px, 36vw, 184px); max-height: 54px; }
           .nav-icons { gap: 10px; }
@@ -620,6 +707,17 @@ export default function Navbar() {
           .mobile-menu {
             padding-left: 16px;
             padding-right: 16px;
+          }
+          .cart-sidebar {
+            height: min(52vh, 400px);
+            border-radius: 22px;
+          }
+          .cart-header-title {
+            font-size: 1.7rem;
+          }
+          .cart-item-img {
+            width: 58px;
+            height: 66px;
           }
         }
       `}</style>
@@ -750,18 +848,24 @@ export default function Navbar() {
           <div className="cart-overlay boshop-nav" onClick={() => setCartOpen(false)} />
           <div className="cart-sidebar boshop-nav">
             <div className="cart-sidebar-header">
-              <span>Shopping Cart ({itemCount})</span>
+              <div className="cart-header-copy">
+                <span className="cart-header-label">Quick Cart</span>
+                <span className="cart-header-title">Shopping Cart</span>
+                <div className="cart-header-meta">
+                  {itemCount} item{itemCount === 1 ? "" : "s"} · {formatCurrency(cartTotal)}
+                </div>
+              </div>
               <button className="cart-close-btn" onClick={() => setCartOpen(false)}>x</button>
             </div>
             <div className="cart-items-list">
               {cart.length === 0 ? (
-                <p style={{ textAlign: "center", color: "var(--theme-muted)", padding: "40px 0", fontSize: "14px" }}>Your cart is empty</p>
+                <div className="cart-empty">Your cart is empty.</div>
               ) : (
                 cart.map(item => (
                   <div key={item.cartItemId || item._id} className="cart-item-row">
                     <img src={item.image || item.thumbnail} alt={item.name} className="cart-item-img" />
                     <div className="cart-item-info">
-                      <p className="cart-item-name">{item.name}</p>
+                      <p className="cart-item-name"><strong>{item.name}</strong></p>
                       <p className="cart-item-price">{formatCurrency(item.price || 0)}</p>
                       {item.size && <p className="cart-item-qty">SIZE: {item.size}</p>}
                       <p className="cart-item-qty">QTY: {String(item.qty || 1).padStart(2, "0")}</p>
