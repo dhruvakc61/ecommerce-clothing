@@ -648,7 +648,7 @@ export default function Navbar() {
             </li>
             
             <li className="nav-item"><Link to="/#our-story">About</Link></li>
-            <li className="nav-item"><Link to="/">Contact</Link></li>
+            <li className="nav-item"><Link to="/contact">Contact</Link></li>
           </ul>
 
           <div className="nav-icons">
@@ -716,6 +716,7 @@ export default function Navbar() {
               </Link>
             ))}
             <Link to="/#our-story" onClick={() => setMenuOpen(false)}>About</Link>
+            <Link to="/contact" onClick={() => setMenuOpen(false)}>Contact</Link>
             <Link to="/cart" onClick={() => setMenuOpen(false)}>Cart ({itemCount})</Link>
             {user ? (
               <>

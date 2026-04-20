@@ -461,7 +461,7 @@ export default function Home() {
           min-height: clamp(260px,38vh,420px);
           display: flex; align-items: center; justify-content: center;
           overflow: hidden;
-          background-image: url('/images/WhatsApp%20Image%202026-04-20%20at%207.19.28%E2%80%AFAM.jpeg');
+          background-image: url('/images/WhatsApp%20Image%202026-04-20%20at%207.19.28%E2%80%AFAM%20(1).jpeg');
           background-position: center;
           background-repeat: no-repeat;
           background-size: cover;

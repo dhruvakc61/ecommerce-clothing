@@ -13,6 +13,7 @@ import OrderHistory from "./pages/OrderHistory";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -160,6 +161,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/about" element={<Navigate to="/#our-story" replace />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
