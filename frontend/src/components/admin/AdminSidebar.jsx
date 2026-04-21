@@ -104,7 +104,6 @@ export default function AdminSidebar() {
             Mobile Ready
           </p>
           <p className="mt-2 text-sm leading-6 text-white/70">
-            Tables collapse into cards on small screens so key product, user, and order details stay visible.
           </p>
         </div>
       </aside>

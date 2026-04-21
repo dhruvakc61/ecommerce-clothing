@@ -10,6 +10,9 @@ function sanitizeItems(items = []) {
       price: Number(item.price ?? item.sale_price ?? 0),
       qty: Math.max(1, Number(item.qty ?? item.quantity ?? 1)),
       image: item.image || item.thumbnail || "",
+      category: item.category ? String(item.category) : undefined,
+      size: item.size ? String(item.size) : undefined,
+      color: item.color ? String(item.color) : undefined,
     }));
 }
 

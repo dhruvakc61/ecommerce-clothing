@@ -290,9 +290,19 @@ export default function Checkout() {
 
       const cardDigits = stripDigits(payment.cardNumber);
       const [expMonth = "", expYear = ""] = payment.expiry.split("/");
+      const normalizedItems = selectedCart.map((item) => ({
+        _id: String(item._id || item.id || ""),
+        name: item.name || "Product",
+        price: Number(item.price ?? item.sale_price ?? 0),
+        qty: Math.max(1, Number(item.qty ?? item.quantity ?? 1)),
+        image: item.image || item.thumbnail || "",
+        category: item.category || "",
+        size: item.size || "",
+        color: item.color || "",
+      }));
 
       const order = {
-        items: selectedCart,
+        items: normalizedItems,
         subtotal: selectedTotals.subtotal,
         shipping,
         discount,

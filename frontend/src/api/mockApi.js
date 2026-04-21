@@ -272,10 +272,24 @@ const mockApi = {
     if (parts[0] === "orders") {
       const orders = load(STORAGE_KEYS.orders, []);
       const user = getCurrentUser();
+      const normalizedItems = Array.isArray(body.items)
+        ? body.items
+            .filter((item) => item && (item._id || item.id))
+            .map((item) => ({
+              _id: String(item._id || item.id),
+              name: String(item.name || "Product"),
+              price: Number(item.price ?? item.sale_price ?? 0),
+              qty: Math.max(1, Number(item.qty ?? item.quantity ?? 1)),
+              image: item.image || item.thumbnail || "",
+              category: item.category ? String(item.category) : "",
+              size: item.size ? String(item.size) : "",
+              color: item.color ? String(item.color) : "",
+            }))
+        : [];
       const order = {
         _id: `o-${Date.now()}`,
         orderReference: generateOrderReference(orders),
-        items: body.items || [],
+        items: normalizedItems,
         subtotal: Number(body.subtotal || 0),
         shipping: Number(body.shipping || 0),
         discount: Number(body.discount || 0),

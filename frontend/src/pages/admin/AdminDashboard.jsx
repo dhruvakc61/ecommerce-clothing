@@ -49,7 +49,7 @@ export default function AdminDashboard() {
     <AdminPageShell
       eyebrow="Store Overview"
       title="Admin Dashboard"
-      description="A calmer control center for tracking store health, inventory pressure, and fulfilment progress across desktop and mobile."
+      
       actions={
         <>
           <Link to="/admin/products/new" className={actionButtonClass}>

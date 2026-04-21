@@ -75,7 +75,6 @@ export default function ProductDetail() {
   const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
   const [activeSize, setActiveSize] = useState(null);
-  const [activeColor, setActiveColor] = useState(0);
 
   if (loading) {
     return (
@@ -105,7 +104,6 @@ export default function ProductDetail() {
       ? [product.image || product.thumbnail]
       : [];
   const sizes = product.sizes ?? ["XS", "S", "M", "L", "XL"];
-  const colors = product.colors ?? ["#2c2c2c", "#4a6fa5", "#8b6355", "#c9a96e"];
   const isOnSale = !!(product.oldPrice || product.original_price);
   const displayPrice = product.price ?? product.sale_price ?? 0;
   const origPrice = product.oldPrice ?? product.original_price ?? null;
@@ -250,24 +248,6 @@ export default function ProductDetail() {
             </div>
           ) : null}
 
-          {colors.length > 0 ? (
-            <div className="pd-option-group">
-              <div className="pd-option-label">Select Color</div>
-              <div className="pd-colors">
-                {colors.map((color, index) => (
-                  <button
-                    key={`${color}-${index}`}
-                    type="button"
-                    className={`pd-color-swatch${activeColor === index ? " is-active" : ""}`}
-                    onClick={() => setActiveColor(index)}
-                    style={{ background: color }}
-                    aria-label={`Choose color ${index + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
-          ) : null}
-
           <div className="pd-actions">
             <div className="pd-qty-box">
               <button type="button" className="pd-qty-btn" onClick={() => handleQty(-1)}>
@@ -296,7 +276,6 @@ export default function ProductDetail() {
                 !outOfStock &&
                 addToCart(product, qty, {
                   size: activeSize ?? null,
-                  color: colors[activeColor] ?? null,
                 })
               }
             >
@@ -461,7 +440,6 @@ const styles = `
   }
   .pd-nav-btn,
   .pd-size-btn,
-  .pd-color-swatch,
   .pd-qty-btn,
   .pd-add-btn,
   .pd-wishlist-btn {
@@ -584,8 +562,7 @@ const styles = `
     display: grid;
     gap: 10px;
   }
-  .pd-sizes,
-  .pd-colors {
+  .pd-sizes {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -606,17 +583,6 @@ const styles = `
     background: var(--theme-ink);
     border-color: var(--theme-ink);
     color: var(--theme-surface);
-  }
-  .pd-color-swatch {
-    width: 30px;
-    height: 30px;
-    border-radius: 999px;
-    border: 3px solid transparent;
-    cursor: pointer;
-    box-shadow: inset 0 0 0 1px rgba(36, 28, 23, 0.1);
-  }
-  .pd-color-swatch.is-active {
-    border-color: var(--theme-ink);
   }
   .pd-actions {
     display: grid;

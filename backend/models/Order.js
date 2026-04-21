@@ -16,7 +16,10 @@ const orderSchema = mongoose.Schema(
         name: String,
         price: Number,
         qty: Number,
-        image: String
+        image: String,
+        category: String,
+        size: String,
+        color: String,
       }
     ],
     subtotal: Number,
