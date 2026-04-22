@@ -34,8 +34,8 @@ const slides = [
 
 const testimonials = [
   { name: "Sarah Johnson", role: "Verified Buyer", text: "Absolutely love the quality of the clothes! The fabric feels premium and the stitching is perfect. Will definitely shop again and again." },
-  { name: "Michael Chen", role: "Fashion Blogger", text: "BoShop has completely changed how I think about online fashion. Fast delivery, great packaging, and stunning designs every time." },
-  { name: "Emily Davis", role: "Loyal Customer", text: "I've been shopping here for 2 years and every single order has been perfect. Customer service is truly outstanding!" },
+  { name: "Michael Chen", role: "Fashion Blogger", text: "BAYA has completely changed how I think about online fashion. Fast delivery, great packaging, and stunning designs every time." },
+  { name: "Emily Davis", role: "Loyal Customer", text: "I've been shopping recently and every single order has been perfect. Customer service is truly outstanding!" },
 ];
 
 function formatKnowledgeDate(value) {
@@ -682,7 +682,7 @@ export default function Home() {
    
 
       <h1 className="bw-hero-h1">
-        Look Hot{"\n"}With{"\n"}2025 Style
+        Look Hot{"\n"}With{"\n"}2026 Style
       </h1>
 
       <p className="bw-hero-sub">

@@ -100,9 +100,7 @@ export default function AdminSidebar() {
         </nav>
 
         <div className="mt-8 rounded-[22px] border border-white/10 bg-white/[0.05] p-4">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#d8b18a]">
-            Mobile Ready
-          </p>
+         
           <p className="mt-2 text-sm leading-6 text-white/70">
           </p>
         </div>
